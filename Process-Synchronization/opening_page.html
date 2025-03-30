@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Synchronization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .navbar {
+            width: 100%;
+            background: rgba(30, 39, 50, 0.9);
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .blob {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.6), rgba(74, 144, 226, 0.2));
+            filter: blur(100px);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: moveBlob 10s infinite alternate ease-in-out;
+            z-index: -1;
+        }
+        
+        @keyframes moveBlob {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-40%, -45%) scale(1.2); }
+        }
+        
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+            padding-top: 100px;
+            padding-bottom: 50px;
+        }
+        
+        .card {
+            width: 260px;
+            background: rgba(45, 55, 72, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .card:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0px 8px 16px rgba(74, 144, 226, 0.4);
+        }
+        
+        .card:active {
+            transform: scale(0.98);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .card h3 {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">Process Synchronization</div>
+    <div class="blob"></div>
+    <div class="container">
+        <div class="card" onclick="location.href='dining_philosophers.html'">
+            <img src="dining_philosophers.png" alt="Dining Philosopher">
+            <h3>Dining Philosopher Problem</h3>
+            <p>This problem models resource sharing among multiple processes where philosophers must alternate between thinking and eating, requiring two forks each, which can lead to deadlocks.</p>
+        </div>
+        <div class="card" onclick="location.href='producer_consumer.html'">
+            <img src="producer_consumer.png" alt="Producer Consumer">
+            <h3>Producer Consumer Problem</h3>
+            <p>This synchronization problem involves a shared buffer where producers generate data and consumers retrieve it.</p>
+        </div>
+        <div class="card" onclick="location.href='reader_writer.html'">
+            <img src="reader_writer.png" alt="Reader Writer">
+            <h3>Reader Writer Problem</h3>
+            <p>In this problem, multiple readers can access shared data simultaneously, but writers require exclusive access.</p>
+        </div>
+        <div class="card" onclick="location.href='sleeping_barber.html'">
+            <img src="sleeping_barber.png" alt="Sleeping Barber">
+            <h3>Sleeping Barber Problem</h3>
+            <p>This problem models customer service synchronization where a barber sleeps if no customers are present.</p>
+        </div>
+    </div>
+</body>
+</html>

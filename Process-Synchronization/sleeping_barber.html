@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleeping Barber Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .shop {
+            width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #2d3748;
+            border-radius: 10px;
+        }
+        .barber-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .barber {
+            width: 100px;
+            height: 100px;
+            background-color: #4ae24a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 10px auto;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .sleeping { background-color: #4a90e2; }
+        .cutting { background-color: #e2a14a; }
+        .cutting-chair {
+            width: 80px;
+            height: 80px;
+            background-color: #555;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+        .blinking {
+            animation: blink 0.2s 3 alternate;
+        }
+        @keyframes blink {
+            from { background-color: #e2a14a; }
+            to { background-color: #555; }
+        }
+        .waiting-room {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .customer {
+            width: 50px;
+            height: 50px;
+            background-color: #e2a14a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .vacant { background-color: #bbb; }
+        .log {
+            background-color: #2d3748;
+            padding: 10px;
+            margin: 20px auto;
+            width: 400px;
+            height: 150px;
+            overflow-y: auto;
+            border-radius: 5px;
+            text-align: center;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #357abd; }
+    </style>
+</head>
+<body>
+    <h2>Sleeping Barber Problem</h2>
+    <div class="shop">
+        <div class="barber-area">
+            <div class="barber sleeping" id="barber">Barber (Sleeping)</div>
+            <div class="cutting-chair" id="cutting-chair">Cutting Chair</div>
+        </div>
+        <div class="waiting-room" id="waiting-room">
+            <!-- Vacant chairs -->
+        </div>
+    </div>
+    <button onclick="addCustomer()">New Customer</button>
+    <button onclick="finishHaircut()">Finish Haircut</button>
+    <div class="log" id="log"></div>
+    <script>
+        let waitingCustomers = [];
+        const barber = document.getElementById("barber");
+        const cuttingChair = document.getElementById("cutting-chair");
+        const waitingRoom = document.getElementById("waiting-room");
+        const logElement = document.getElementById("log");
+        const maxChairs = 10;
+        let barberBusy = false;
+
+        function logMessage(message) {
+            const p = document.createElement("p");
+            p.textContent = message;
+            logElement.appendChild(p);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function initializeWaitingRoom() {
+            waitingRoom.innerHTML = "";
+            for (let i = 0; i < maxChairs; i++) {
+                const chair = document.createElement("div");
+                chair.classList.add("customer", "vacant");
+                chair.textContent = "Vacant";
+                waitingRoom.appendChild(chair);
+            }
+        }
+
+        function addCustomer() {
+            let vacantChairs = document.querySelectorAll(".vacant");
+            if (vacantChairs.length === 0) {
+                logMessage("A customer leaves because no chairs are available.");
+                return;
+            }
+            let chair = vacantChairs[0];
+            chair.classList.remove("vacant");
+            chair.classList.add("waiting");
+            chair.textContent = "Waiting";
+            waitingCustomers.push(chair);
+            logMessage("New customer arrives and waits.");
+            serveNextCustomer();
+        }
+
+        function serveNextCustomer() {
+            if (barberBusy || waitingCustomers.length === 0) return;
+            barberBusy = true;
+            barber.classList.replace("sleeping", "cutting");
+            barber.textContent = "Barber (Cutting)";
+            let customer = waitingCustomers.shift();
+            cuttingChair.classList.add("blinking");
+            setTimeout(() => {
+                cuttingChair.classList.remove("blinking");
+                cuttingChair.textContent = "Occupied";
+                customer.classList.remove("waiting");
+                customer.classList.add("vacant");
+                customer.textContent = "Vacant";
+                logMessage("Barber starts cutting hair. Click 'Finish Haircut' to complete.");
+            }, 600);
+        }
+
+        function finishHaircut() {
+            if (!barberBusy) return;
+            barberBusy = false;
+            barber.classList.replace("cutting", "sleeping");
+            barber.textContent = "Barber (Sleeping)";
+            cuttingChair.textContent = "Cutting Chair";
+            logMessage("Barber finished cutting. Next customer!");
+            serveNextCustomer();
+        }
+
+        initializeWaitingRoom();
+    </script>
+</body>
+</html>
