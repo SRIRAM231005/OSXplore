@@ -79,13 +79,13 @@ body {
     width: 300px;
     height: 750px; /* Adjustable total height */
     border: 2px solid white;
-    overflow: hidden;
+    /*overflow: hidden;*/
     background-color: black;
 }
 
 .memory-block {
     width: 100%;
-    border: 1px solid white;
+    border: 2px solid white;
     position: relative;
     display: flex;
     align-items: center;
@@ -93,6 +93,7 @@ body {
     text-align: center;
     font-size: 22px;/**/
     color: white;
+    overflow: visible;
 }
 
 .internal-frag {
@@ -210,8 +211,23 @@ body {
     border-radius: 3px;
 }
 
-.process-color {
+.process-color1 {
     background-color: green;
+}
+.process-color2{
+    background-color: #2196F3;
+}
+
+.process-color3{
+    background-color: #FF9800;
+}
+
+.process-color4{
+    background-color:  #9C27B0;
+}
+
+.process-color5{
+    background-color:  #E91E63;
 }
 
 .fragmentation-color {
@@ -262,4 +278,8 @@ body {
 .algo-content p {
     font-size: 14px;
     margin-bottom: 25px;
+}
+
+.block-text{
+    z-index: 3;
 }
