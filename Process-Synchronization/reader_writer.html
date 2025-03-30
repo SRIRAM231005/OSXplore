@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reader-Writer Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #1e1e1e;
+            color: white;
+        }
+        .resource {
+            width: 300px;
+            height: 150px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #00ffcc;
+            background-color: #2a2a2a;
+            box-shadow: 0 0 10px #00ffcc;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        .reading {
+            background-color: #008f39;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        .writing {
+            background-color: #8f0000;
+            box-shadow: 0 0 15px #ff0000;
+        }
+        .controls button {
+            margin: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            background-color: #00ffcc;
+            color: black;
+            box-shadow: 0 0 5px #00ffcc;
+        }
+        .controls button:hover {
+            background-color: #008f8f;
+            box-shadow: 0 0 10px #00ffcc;
+        }
+        .disabled {
+            background-color: grey !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #00ffcc;
+            background-color: #2a2a2a;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 0 5px #00ffcc;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 14px;
+            overflow-y: auto;
+            max-height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Reader-Writer Problem Simulation</h2>
+    <div id="resource" class="resource">Shared Resource</div>
+    <div class="controls">
+        <button id="readStart" onclick="startReading()">Start Reading</button>
+        <button id="readStop" onclick="stopReading()">Stop Reading</button>
+        <button id="writeStart" onclick="startWriting()">Start Writing</button>
+        <button id="writeStop" onclick="stopWriting()">Stop Writing</button>
+        <button id="reset" onclick="resetSimulation()">Reset</button>
+    </div>
+    <p>Active Readers: <span id="readerCount">0</span></p>
+    <div class="log" id="log"></div>
+    <script>
+        let readerCount = 0;
+        let isWriting = false;
+        const resource = document.getElementById("resource");
+        const readerCounter = document.getElementById("readerCount");
+        const readStartBtn = document.getElementById("readStart");
+        const writeStartBtn = document.getElementById("writeStart");
+        const logDiv = document.getElementById("log");
+
+        function logMessage(message) {
+            logDiv.innerHTML += `<p>${message}</p>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateButtons() {
+            if (isWriting || readerCount > 0) {
+                writeStartBtn.classList.add("disabled");
+                writeStartBtn.disabled = true;
+            } else {
+                writeStartBtn.classList.remove("disabled");
+                writeStartBtn.disabled = false;
+            }
+
+            if (isWriting) {
+                readStartBtn.classList.add("disabled");
+                readStartBtn.disabled = true;
+            } else {
+                readStartBtn.classList.remove("disabled");
+                readStartBtn.disabled = false;
+            }
+        }
+
+        function startReading() {
+            if (!isWriting) {
+                readerCount++;
+                readerCounter.textContent = readerCount;
+                resource.textContent = "Reading...";
+                resource.classList.add("reading");
+                logMessage(`Reader ${readerCount} is reading.`);
+                updateButtons();
+            }
+        }
+
+        function stopReading() {
+            if (readerCount > 0) {
+                logMessage(`Reader ${readerCount} stopped reading.`);
+                readerCount--;
+                readerCounter.textContent = readerCount;
+                if (readerCount === 0) {
+                    resource.textContent = "Shared Resource";
+                    resource.classList.remove("reading");
+                }
+                updateButtons();
+            }
+        }
+
+        function startWriting() {
+            if (readerCount === 0 && !isWriting) {
+                isWriting = true;
+                resource.textContent = "Writing...";
+                resource.classList.add("writing");
+                logMessage("A writer is writing.");
+                updateButtons();
+            }
+        }
+
+        function stopWriting() {
+            if (isWriting) {
+                logMessage("The writer stopped writing.");
+                isWriting = false;
+                resource.textContent = "Shared Resource";
+                resource.classList.remove("writing");
+                updateButtons();
+            }
+        }
+
+        function resetSimulation() {
+            readerCount = 0;
+            isWriting = false;
+            readerCounter.textContent = readerCount;
+            resource.textContent = "Shared Resource";
+            resource.classList.remove("reading", "writing");
+            logDiv.innerHTML = "";
+            updateButtons();
+        }
+    </script>
+</body>
+</html>

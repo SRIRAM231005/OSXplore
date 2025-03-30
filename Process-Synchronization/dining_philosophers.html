@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining Philosophers Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .table {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-color: #2d3748;
+            margin: 20px auto;
+            position: relative;
+        }
+        .philosopher, .fork {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .thinking { background-color: #4a90e2; }
+        .hungry { background-color: #e2a14a; }
+        .eating { background-color: #4ae24a; }
+        .fork { background-color: #bbb; width: 30px; height: 30px; font-size: 12px; }
+        .held { background-color: #666; }
+        .log {
+            background-color: #2d3748;
+            padding: 10px;
+            margin-top: 20px;
+            width: 400px;
+            height: 150px;
+            overflow-y: auto;
+            border-radius: 5px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .legend {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2d3748;
+            border-radius: 5px;
+            width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+        .legend div {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+        }
+        .legend span {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h2>Dining Philosophers Problem</h2>
+    <div class="table" id="table"></div>
+    <div class="log" id="log"></div>
+    <div class="legend">
+        <h3>Legend</h3>
+        <div><span style="background-color: #4a90e2;"></span> Thinking</div>
+        <div><span style="background-color: #e2a14a;"></span> Hungry</div>
+        <div><span style="background-color: #4ae24a;"></span> Eating</div>
+        <div><span style="background-color: #bbb;"></span> Fork Available</div>
+        <div><span style="background-color: #666;"></span> Fork Held</div>
+    </div>
+    <script>
+        const table = document.getElementById("table");
+        const logElement = document.getElementById("log");
+        const philosopherCount = 5;
+        const philosophers = [];
+        const forks = [];
+        let chopsticks = Array(philosopherCount).fill(true);
+
+        function logMessage(message) {
+            const p = document.createElement("p");
+            p.textContent = message;
+            logElement.appendChild(p);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function createPhilosophersAndForks() {
+            for (let i = 0; i < philosopherCount; i++) {
+                let angle = (i * 360 / philosopherCount) * (Math.PI / 180);
+                let philosopher = document.createElement("div");
+                philosopher.classList.add("philosopher", "thinking");
+                philosopher.textContent = `P${i+1}`;
+                philosopher.style.left = `${150 + 120 * Math.cos(angle) - 30}px`;
+                philosopher.style.top = `${150 + 120 * Math.sin(angle) - 30}px`;
+                philosopher.dataset.index = i;
+                philosopher.addEventListener("click", () => changeState(i));
+                table.appendChild(philosopher);
+                philosophers.push(philosopher);
+
+                let fork = document.createElement("div");
+                fork.classList.add("fork");
+                fork.textContent = `F${i+1}`;
+                fork.style.left = `${150 + 90 * Math.cos(angle + Math.PI / philosopherCount) - 15}px`;
+                fork.style.top = `${150 + 90 * Math.sin(angle + Math.PI / philosopherCount) - 15}px`;
+                fork.dataset.index = i;
+                fork.addEventListener("click", () => releaseFork(i));
+                table.appendChild(fork);
+                forks.push(fork);
+            }
+        }
+
+        function changeState(index) {
+            let leftChopstick = (index + philosopherCount - 1) % philosopherCount;
+            let rightChopstick = index;
+
+            if (philosophers[index].classList.contains("thinking")) {
+                philosophers[index].classList.replace("thinking", "hungry");
+                logMessage(`Philosopher ${index + 1} is hungry.`);
+            } else if (philosophers[index].classList.contains("hungry")) {
+                if (chopsticks[leftChopstick] && chopsticks[rightChopstick]) {
+                    chopsticks[leftChopstick] = false;
+                    chopsticks[rightChopstick] = false;
+                    philosophers[index].classList.replace("hungry", "eating");
+                    forks[leftChopstick].classList.add("held");
+                    forks[rightChopstick].classList.add("held");
+                    logMessage(`Philosopher ${index + 1} is eating.`);
+                } else {
+                    logMessage(`Philosopher ${index + 1} is waiting for chopsticks.`);
+                }
+            } else if (philosophers[index].classList.contains("eating")) {
+                releaseChopsticks(index, leftChopstick, rightChopstick);
+            }
+        }
+
+        function releaseChopsticks(index, leftChopstick, rightChopstick) {
+            chopsticks[leftChopstick] = true;
+            chopsticks[rightChopstick] = true;
+            philosophers[index].classList.replace("eating", "thinking");
+            forks[leftChopstick].classList.remove("held");
+            forks[rightChopstick].classList.remove("held");
+            logMessage(`Philosopher ${index + 1} has finished eating and is thinking again.`);
+        }
+
+        function releaseFork(index) {
+            chopsticks[index] = true;
+            forks[index].classList.remove("held");
+            logMessage(`Fork ${index + 1} has been manually released.`);
+        }
+
+        createPhilosophersAndForks();
+    </script>
+</body>
+</html>

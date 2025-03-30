@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producer-Consumer Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .buffer-container {
+            width: 100px;
+            border: 2px solid white;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse;
+            background-color: #2d3748;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .item {
+            width: 100%;
+            background-color: green;
+            border-top: 1px solid black;
+            transition: all 0.3s ease;
+        }
+        .controls button, .controls input {
+            margin: 10px;
+            padding: 10px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .controls input {
+            background-color: #fff;
+            color: black;
+            width: 50px;
+            text-align: center;
+        }
+        .controls button:hover {
+            background-color: #357ab8;
+        }
+        .log {
+            background-color: #2d3748;
+            padding: 10px;
+            margin-top: 20px;
+            width: 400px;
+            height: 150px;
+            overflow-y: auto;
+            border-radius: 5px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .buffer-container::before {
+            content: "Buffer";
+            position: absolute;
+            top: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Producer - Consumer Problem</h2>
+    <label for="bufferSize">Set Buffer Size : </label>
+    <input type="number" id="bufferSize" min="1" value="1" onchange="setBufferSize()">
+    <div class="buffer-container" id="buffer"></div>
+    <div class="controls">
+        <button onclick="produce()">Produce</button>
+        <button onclick="consume()">Consume</button>
+        <button onclick="resetBuffer()">Reset</button>
+    </div>
+    <div class="log" id="log"></div>
+    <script>
+        let bufferSize = 5;
+        let bufferCount = 0;
+        const bufferElement = document.getElementById("buffer");
+        const logElement = document.getElementById("log");
+        const bufferSizeInput = document.getElementById("bufferSize");
+
+        function logMessage(message) {
+            const p = document.createElement("p");
+            p.textContent = message;
+            logElement.appendChild(p);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function setBufferSize() {
+            bufferSize = parseInt(bufferSizeInput.value);
+            bufferElement.style.height = `${bufferSize * 40}px`;
+            updateBufferDisplay();
+            logMessage(`Buffer size set to ${bufferSize}`);
+        }
+
+        function produce() {
+            if (bufferCount < bufferSize) {
+                bufferCount++;
+                updateBufferDisplay();
+                logMessage(`Produced item ${bufferCount}`);
+            } else {
+                logMessage("Buffer is full! Cannot produce.");
+            }
+        }
+
+        function consume() {
+            if (bufferCount > 0) {
+                logMessage(`Consumed item ${bufferCount}`);
+                bufferCount--;
+                updateBufferDisplay();
+            } else {
+                logMessage("Buffer is empty! Cannot consume.");
+            }
+        }
+
+        function resetBuffer() {
+            bufferCount = 0;
+            updateBufferDisplay();
+            logElement.innerHTML = "";
+            logMessage("Buffer reset.");
+        }
+
+        function updateBufferDisplay() {
+            bufferElement.innerHTML = "";
+            for (let i = 0; i < bufferCount; i++) {
+                let item = document.createElement("div");
+                item.classList.add("item");
+                item.style.height = `${100 / bufferSize}%`;
+                bufferElement.appendChild(item);
+            }
+        }
+    </script>
+</body>
+</html>
