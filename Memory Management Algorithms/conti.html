@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Allocation Simulator</title>
+    <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side: Chat UI -->
+        <div class="chat-container">
+            <div id="chat-box" class="chat-box"></div>
+            <input type="text" id="user-input" placeholder="Type here..." onkeypress="handleUserInput(event)">
+            <div class="legend-container">
+                <div class="legend-item">
+                    <div class="legend-color process-color1"></div>
+                    <div class="legend-color process-color2"></div>
+                    <div class="legend-color process-color3"></div>
+                    <div class="legend-color process-color4"></div>
+                    <div class="legend-color process-color5"></div>
+                    <span>Process (Allocated Memory)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color fragmentation-color"></div>
+                    <span>Internal Fragmentation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: black;"></div>
+                    <span>Empty Block</span>
+                </div>
+                <div class="reset-container">
+                    <button class="reset-btn" onclick="resetPage()">Reset</button>
+                    <button id="openDialog">Algorithm Details</button>
+                </div>
+            </div>                        
+        </div>
+
+        <!-- Right Side: Memory Visualization -->
+        <div class="simulation-container">
+            <h2>Simulation</h2>
+            <div style="display: flex; align-items: center;gap:120px;">
+              <div id="memory-visual" class="memory-visual"></div>
+              <div id="allocation-table"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="algoDialog" class="dialog-overlay">
+        <div class="dialog-box">
+            <h2 style="margin-bottom: 25px;">Memory Allocation Algorithms</h2>
+            <div class="algo-content">
+                <h3>First Fit</h3>
+                <p>Allocates the first available block that fits the process size.</p>
+    
+                <h3>Best Fit</h3>
+                <p>Finds the smallest block that can accommodate the process, minimizing internal fragmentation.</p>
+    
+                <h3>Worst Fit</h3>
+                <p>Chooses the largest available block, which may increase fragmentation.</p>
+    
+                <h3>Next Fit</h3>
+                <p>Works like First Fit but starts searching from the last allocated position.</p>
+            </div>
+            <button class="close-btn">Close</button>
+        </div>
+    </div>
+
+    <script src="script1.js"></script>
+</body>
+</html>
