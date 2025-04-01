@@ -133,7 +133,7 @@ function allocateMemory() {
     memoryVisual.innerHTML = '';
 
     let totalMemorySize = blocks.reduce((a, b) => a + b, 0); 
-    let allocatedBlocks = blocks.map(size => ({ size, occupied: null, internalFragmentation: 0 , blockNo: -1 }));
+    let allocatedBlocks = blocks.map(size => ({ size, occupied: null, internalFragmentation: 0 , blockNo: -1, reaminingSize: size }));
     let allprocesses = processes.map(processSize => ({processSize , blockNo: -1}));
 
     let nextIndex = 0;
@@ -144,11 +144,16 @@ function allocateMemory() {
 
         if (strategy === 'first') {
             for (let i = 0; i < allocatedBlocks.length; i++) {
-                if (!allocatedBlocks[i].occupied && allocatedBlocks[i].size >= processSize) {
-                    allocatedBlocks[i].occupied = processSize;
-                    allocatedBlocks[i].internalFragmentation = allocatedBlocks[i].size - processSize;
-                    allocatedBlocks[i].blockNo = i;
+                if ((allocatedBlocks[i].occupied)!== 2 && allocatedBlocks[i].reaminingSize >= processSize) {
                     allprocesses[processIndex].blockNo = i;
+                    allocatedBlocks[i].internalFragmentation = allocatedBlocks[i].reaminingSize - processSize;
+                    allocatedBlocks[i].reaminingSize = allocatedBlocks[i].reaminingSize - processSize;
+                    if(allocatedBlocks[i].reaminingSize > 0){
+                        allocatedBlocks[i].occupied = 1;
+                    }else{
+                        allocatedBlocks[i].occupied = 2;
+                    }
+                    allocatedBlocks[i].blockNo = i;
                     allocated = true;
                     break;
                 }
@@ -156,17 +161,24 @@ function allocateMemory() {
         } else if (strategy === 'best') {
             let bestIndex = -1;
             for (let i = 0; i < allocatedBlocks.length; i++) {
-                if (!allocatedBlocks[i].occupied && allocatedBlocks[i].size >= processSize) {
-                    if (bestIndex === -1 || allocatedBlocks[i].size < allocatedBlocks[bestIndex].size) {
+                if ((allocatedBlocks[i].occupied)!== 2 && allocatedBlocks[i].reaminingSize >= processSize) {
+                    if (bestIndex === -1 || allocatedBlocks[i].reaminingSize < allocatedBlocks[bestIndex].reaminingSize) {
                         bestIndex = i;
                     }
                 }
             }
             if (bestIndex !== -1) {
                 allocatedBlocks[bestIndex].occupied = processSize;
-                allocatedBlocks[bestIndex].internalFragmentation = allocatedBlocks[bestIndex].size - processSize;
+                allocatedBlocks[bestIndex].internalFragmentation = allocatedBlocks[bestIndex].reaminingSize - processSize;
+                allocatedBlocks[bestIndex].reaminingSize = allocatedBlocks[bestIndex].reaminingSize - processSize;
+                if(allocatedBlocks[bestIndex].reaminingSize > 0){
+                    allocatedBlocks[bestIndex].occupied = 1;
+                }else{
+                    allocatedBlocks[bestIndex].occupied = 2;
+                }
                 allocatedBlocks[bestIndex].blockNo = bestIndex;
                 allprocesses[processIndex].blockNo = bestIndex;
+                bestIndex = -1;
                 allocated = true;
             }
         } else if (strategy === 'worst') {
@@ -174,8 +186,8 @@ function allocateMemory() {
             
             // Find the block with the largest space that can fit the process
             for (let i = 0; i < allocatedBlocks.length; i++) {
-                if (!allocatedBlocks[i].occupied && allocatedBlocks[i].size >= processSize) {
-                    if (worstIndex === -1 || allocatedBlocks[i].size > allocatedBlocks[worstIndex].size) {
+                if ((allocatedBlocks[i].occupied)!== 2 && allocatedBlocks[i].reaminingSize >= processSize) {
+                    if (worstIndex === -1 || allocatedBlocks[i].reaminingSize > allocatedBlocks[worstIndex].reaminingSize) {
                         worstIndex = i;
                     }
                 }
@@ -183,30 +195,43 @@ function allocateMemory() {
         
             if (worstIndex !== -1) {
                 allocatedBlocks[worstIndex].occupied = processSize;
-                let remainingSpace = allocatedBlocks[worstIndex].size - processSize;
-
-        
-                // If there's internal fragmentation, update it
-                allocatedBlocks[worstIndex].internalFragmentation = remainingSpace;
+                allocatedBlocks[worstIndex].internalFragmentation = allocatedBlocks[worstIndex].reaminingSize - processSize;
+                allocatedBlocks[worstIndex].reaminingSize = allocatedBlocks[worstIndex].reaminingSize - processSize;
+                if(allocatedBlocks[worstIndex].reaminingSize > 0){
+                    allocatedBlocks[worstIndex].occupied = 1;
+                }else{
+                    allocatedBlocks[worstIndex].occupied = 2;
+                }
                 allocatedBlocks[worstIndex].blockNo = worstIndex;
                 allprocesses[processIndex].blockNo = worstIndex;
-                
+                worstIndex = -1;
                 allocated = true;
             }
         } else if (strategy === 'next') {
             let startIndex = nextIndex;
+            let a=0;
+            console.log("start",allocatedBlocks[nextIndex].reaminingSize);
             while (true) {
-                if (!allocatedBlocks[nextIndex].occupied && allocatedBlocks[nextIndex].size >= processSize) {
-                    allocatedBlocks[nextIndex].occupied = processSize;
-                    allocatedBlocks[nextIndex].internalFragmentation = allocatedBlocks[nextIndex].size - processSize;
-                    allocatedBlocks[nextIndex].blockNo = nextIndex;
-                    allprocesses[processIndex].blockNo = nextIndex;
+                if ((allocatedBlocks[startIndex].occupied)!== 2 && allocatedBlocks[startIndex].reaminingSize >= processSize) {
+                    allocatedBlocks[startIndex].internalFragmentation = allocatedBlocks[startIndex].reaminingSize - processSize;
+                    allocatedBlocks[startIndex].reaminingSize = allocatedBlocks[startIndex].reaminingSize - processSize;
+                    if(allocatedBlocks[startIndex].reaminingSize > 0){
+                        allocatedBlocks[startIndex].occupied = 1;
+                    }else{
+                        allocatedBlocks[startIndex].occupied = 2;
+                    }
+                    allocatedBlocks[startIndex].blockNo = startIndex;
+                    allprocesses[processIndex].blockNo = startIndex;
                     allocated = true;
-                    nextIndex = (nextIndex + 1) % allocatedBlocks.length;
+                    console.log("1",nextIndex);
+                    nextIndex = (startIndex) % allocatedBlocks.length;
+                    console.log("2",nextIndex);
                     break;
                 }
-                nextIndex = (nextIndex + 1) % allocatedBlocks.length;
-                if (nextIndex === startIndex) break;
+                nextIndex = (startIndex) % allocatedBlocks.length;
+                startIndex = (startIndex + 1) % allocatedBlocks.length;
+                a++;
+                if (a === allocatedBlocks.length) break;
             }
         }
 
@@ -228,13 +253,13 @@ function allocateMemory() {
     visualizeBlocks(blocks, totalMemorySize);
     moveTextOutsideBlocks();
     setTimeout(() => {
-        visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize);
+        visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize, allprocesses);
         generateAllocationTable(processes, allocatedBlocks, allprocesses);
     }, 2000);
     addMessage("Memory allocation simulation complete! ✅");
 }
 
-function visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize) {
+function visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize, allprocesses) {
     let memoryVisual = document.getElementById("memory-visual");
     let processColors = ["#4caf50", "#2196F3", "#FF9800", "#9C27B0", "#E91E63"]; // Different process colors
     let processColorMap = {};
@@ -245,25 +270,137 @@ function visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize) {
         }
         return processColorMap[processId];
     }
-
+    let count = new Array(allocatedBlocks.length).fill(0);
     function visualizeBlock(index) {
 
         let allBlocks = document.querySelectorAll(".memory-block");
 
-        if (index >= allocatedBlocks.length) return;
-        if (index >= allBlocks.length) {
-            console.error(`Block at index ${index} doesn't exist!`);
+        if (index >= processes.length){
+            setTimeout(() => {
+                let allBlocks = document.querySelectorAll(".memory-block");
+                allocatedBlocks.forEach((element,index) =>{
+                    if (element.internalFragmentation > 0) {
+                        let blockDiv = allBlocks[index];
+                
+                        let fragDiv = document.createElement("div");
+                        fragDiv.classList.add("internal-frag-");
+                        fragDiv.style.height = `${(element.internalFragmentation / element.size) * 100}%`;
+                        fragDiv.style.width = "100%";
+                        fragDiv.style.display = "flex";
+                        fragDiv.style.alignItems = "center"; 
+                        fragDiv.style.justifyContent = "center"; 
+                        fragDiv.style.position = "absolute";
+                        fragDiv.style.bottom = "0";
+                        fragDiv.innerHTML = `<b>Frag(${element.internalFragmentation})</b>`;
+                        fragDiv.style.opacity = "0";
+                        fragDiv.style.transition = "opacity 1s ease-in-out";
+                        blockDiv.appendChild(fragDiv);
+                
+                        setTimeout(() => {
+                            fragDiv.style.backgroundColor = "red";
+                            fragDiv.style.opacity = "1"; 
+                        }, 300);
+                    }
+                })
+            },600)
+
             return;
-        }
+        } 
         
-        let block = allocatedBlocks[index];
-        let blockDiv = allBlocks[index];
+        //let block = allocatedBlocks[index];
+        let blockIndex;
+        //let blockDiv = allBlocks[index];
         console.log(memoryVisual);
-        console.log(blockDiv);
+        //console.log(blockDiv);
+
+      //index of process
+            allprocesses.forEach((pro,ind) =>{
+                if(ind === index){
+                    allBlocks.forEach((element,blockind) =>{
+                        if(pro.blockNo === blockind){
+                            if(allocatedBlocks[blockind].occupied){
+                                blockIndex = blockind;
+                                let blockDiv = allBlocks[blockind];
+                                /*let firstElement = blockDiv.querySelector(".internal-frag");
+                                if (firstElement) {
+                                    firstElement.remove();
+                                }*/
+                                let processColor = getProcessColor(ind);
+                                console.log(processColor);
+                        
+                                // Create a new div for the process label
+                                let processDiv = document.createElement("div");
+                                processDiv.innerHTML = `<b>P${ind+1}(${pro.processSize})</b>`;
+                                processDiv.style.position = "absolute";
+                                processDiv.style.top = `${count[blockind]}%`;
+                                processDiv.style.color = "white";
+                                processDiv.style.fontWeight = "bold";
+                                processDiv.style.opacity = "0"; // Start hidden
+                                processDiv.style.transition = "opacity 1s ease-in-out";
+                                
+                                // ✅ Set height based on block height dynamically
+                                processDiv.style.height = `${((pro.processSize) / allocatedBlocks[blockind].size) * 100}%`; // 60% of block height
+                                processDiv.style.width = "100%";
+                                processDiv.style.display = "flex";
+                                processDiv.style.alignItems = "center"; 
+                                processDiv.style.justifyContent = "center";
+                                blockDiv.appendChild(processDiv); 
+                            
+                                // Smooth transition
+                                setTimeout(() => {
+                                    processDiv.style.backgroundColor = processColor;
+                                    processDiv.style.opacity = "1";
+                                }, 600);
+
+                                count[blockind] = count[blockind]+(((pro.processSize) / allocatedBlocks[blockind].size) * 100);
+                                console.log("count:",count)
+                            }
+                        }
+                    })
+                }
+            })
 
         
-            if (block.occupied) {
-                let processColor = getProcessColor(block.occupied);
+            /*if (block.occupied) {
+                let count=0;
+                allprocesses.forEach((pro,ind) =>{
+                    if(pro.blockNo === index){
+                        let processColor = getProcessColor(ind);
+                        console.log(processColor);
+                
+                        // Create a new div for the process label
+                        let processDiv = document.createElement("div");
+                        processDiv.innerHTML = `<b>P${ind+1}(${pro.processSize})</b>`;
+                        processDiv.style.position = "absolute";
+                        processDiv.style.top = `${count}%`;
+                        processDiv.style.color = "white";
+                        processDiv.style.fontWeight = "bold";
+                        processDiv.style.opacity = "0"; // Start hidden
+                        processDiv.style.transition = "opacity 1s ease-in-out";
+                        
+                        // ✅ Set height based on block height dynamically
+                        processDiv.style.height = `${((pro.processSize) / block.size) * 100}%`; // 60% of block height
+                        processDiv.style.width = "100%";
+                        processDiv.style.display = "flex";
+                        processDiv.style.alignItems = "center"; 
+                        processDiv.style.justifyContent = "center"; 
+                    
+                        //blockDiv.style.backgroundColor = processColor;
+                        //blockDiv.appendChild(processDiv); // Append process label without removing block name
+                    
+                        // Smooth transition
+                        setTimeout(() => {
+                            processDiv.style.backgroundColor = processColor;
+                            processDiv.style.opacity = "1";
+                            blockDiv.appendChild(processDiv);
+                            //processDiv.style.right = "50px"; // Moves outward
+                        }, 100);
+
+                        count = count+(((pro.processSize) / block.size) * 100);
+                        console.log("count:",count);
+                    }
+                })*///////////////////////////////////////////////////////
+                /*let processColor = getProcessColor(block.occupied);
                 
                 // Create a new div for the process label
                 let processDiv = document.createElement("div");
@@ -289,15 +426,21 @@ function visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize) {
                     blockDiv.style.backgroundColor = processColor;
                     processDiv.style.opacity = "1";
                     //processDiv.style.right = "50px"; // Moves outward
-                }, 100);
-            }
+                }, 100);*/
+            //}
             
 
-        if (block.internalFragmentation > 0) {
+        /*if (allocatedBlocks[blockIndex].internalFragmentation > 0) {
+           let blockDiv = allBlocks[blockIndex];
+           let block = allocatedBlocks[blockIndex];
+
             let fragDiv = document.createElement("div");
-            fragDiv.classList.add("internal-frag");
+            fragDiv.classList.add("internal-frag-");
             fragDiv.style.height = `${(block.internalFragmentation / block.size) * 100}%`;
             fragDiv.style.width = "100%";
+            fragDiv.style.display = "flex";
+            fragDiv.style.alignItems = "center"; 
+            fragDiv.style.justifyContent = "center"; 
             fragDiv.style.position = "absolute";
             fragDiv.style.bottom = "0";
             fragDiv.innerHTML = `<b>Frag(${block.internalFragmentation})</b>`;
@@ -307,9 +450,9 @@ function visualizeAllocationStepByStep(allocatedBlocks, totalMemorySize) {
 
             setTimeout(() => {
                 fragDiv.style.backgroundColor = "red";
-                fragDiv.style.opacity = "1"; // Fade in internal fragmentation
-            }, 100);
-        }
+                fragDiv.style.opacity = "1"; 
+            }, 700);
+        }*/
 
         setTimeout(() => visualizeBlock(index + 1), 1000); // Process next block smoothly
     }
