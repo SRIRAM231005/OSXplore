@@ -1,52 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSXplore</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSXplore - Visual OS Concepts</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  
-    
-    <header>
+  <div class="background-decoration"></div>
+  <div class="gradient-overlay"></div>
+  <div class="backgroundBoxes"></div>
+  <div class="blob" id="blob"></div>
+  <main>
+    <!-- Hero section -->
+    <section class="hero">
+      <div class="hero-content">
         <h1>OSXplore</h1>
-        <p>Explore core OS concepts visually</p>
-    </header>
+        <p class="subtitle">Explore core OS concepts visually</p>
+        <button class="scroll-button" onclick="scrollToFeatures()">
+          Explore
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </button>
+      </div>
+    </section>
 
-    <div class="backgroundBoxes"></div>
-
-    <main>
-        <div class="topic-grid">
-            <div class="topic-card" onclick="window.location.href='Memory Management Algorithms/conti.html'">
-                <img src="images/memoryAllocationTechniques.png" style="height: 150px; width: 250px;">
-                <div style="padding: 20px;">Memory Allocation Techniques</div>
+    <!-- Features section -->
+    <section class="features" id="features">
+      <div class="features-grid">
+        <div class="feature-card" data-scroll>
+          <div class="feature-content" onclick="window.location.href='Memory Management Algorithms/conti.html'">
+            <img src="memoryAllocationTechniques.png" alt="Memory Allocation" class="feature-image">
+            <div class="feature-text">
+              <h3>Memory Allocation Techniques</h3>
+              <p>Visualize how operating systems handle memory allocation and management in real-time.</p>
             </div>
-            <div class="topic-card" onclick="window.location.href='Process-Synchronization/opening_page.html'">
-                <img src="images/processSync.jpg" style="height: 150px; width: 250px;">
-                <div style="padding: 20px;">Process Syncronization</div>
-            </div>
-            <!--<div class="topic-card">
-                <img src="img.png" style="height: 150px; width: 250px;">
-                <div style="padding: 20px;">File Systems</div>
-            </div>
-            <div class="topic-card">
-                <img src="img.png" style="height: 150px; width: 250px;">
-                <div style="padding: 20px;">Deadlocks</div>
-            </div>
-            <div class="topic-card">
-                <img src="img.png" style="height: 150px; width: 250px;">
-                <div style="padding: 20px;">CPU Scheduling</div>
-            </div>-->
+          </div>
         </div>
-    </main>
 
+        <div class="feature-card" data-scroll>
+          <div class="feature-content" onclick="window.location.href='Process-Synchronization/opening_page.html'">
+            <img src="processSync.jpg" alt="Process Synchronization" class="feature-image">
+            <div class="feature-text">
+              <h3>Process Synchronization</h3>
+              <p>Understand complex synchronization mechanisms through interactive demonstrations.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-card" data-scroll>
+          <div class="feature-content">
+            <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=800" alt="CPU Scheduling" class="feature-image">
+            <div class="feature-text">
+              <h3>CPU Scheduling</h3>
+              <p>Explore different CPU scheduling algorithms and their impact on system performance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
-        <p>© 2025 OS Simulator Team | Designed with ❤️</p>
+      <p>© 2025 OS Simulator Team | Designed with ❤️</p>
     </footer>
+  </main>
 
-    
+  <script>
+    function scrollToFeatures() {
+      document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+    }
 
-    <script src="script.js"></script>
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('[data-scroll]').forEach((el) => observer.observe(el));
+
+
+    /*const blob = document.getElementById('blob');
+
+        function moveBlob() {
+            const x = Math.random() * (window.innerWidth - 200);
+            const y = Math.random() * (window.innerHeight - 200);
+            blob.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        setInterval(moveBlob, 5000); // Move every 5 seconds
+        moveBlob(); // Initial move*/
+  </script>
+  <script src="script.js"></script>
 </body>
 </html>
