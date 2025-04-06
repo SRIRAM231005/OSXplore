@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>CPU Scheduling Simulator</h1>
+
+    <div class="controls">
+      <label for="algorithm">Select Algorithm:</label>
+      <select id="algorithm">
+        <option value="fcfs">First Come First Serve (FCFS)</option>
+        <option value="sjf">Shortest Job First (Preemptive)</option>
+        <option value="rr">Round Robin</option>
+        <option value="priority">Priority Scheduling</option>
+      </select>      
+    </div>
+
+    <div class="input-fields">
+        <div>
+            <label>Priority (for Priority Scheduling): </label>
+            <input type="number" id="priority" min="1">
+          </div>
+          <div>
+            <label>Time Quantum (for Round Robin): </label>
+            <input type="number" id="timeQuantum" value="2" min="1">
+          </div>
+      <input type="number" id="arrivalTime" placeholder="Arrival Time" />
+      <input type="number" id="burstTime" placeholder="Burst Time" />
+      <button id="addProcess">Add Process</button>
+    </div>
+
+    <div class="process-table">
+      <h2>Process List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Process</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+          </tr>
+        </thead>
+        <tbody id="processTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="start-btn-container">
+      <button id="startBtn">Start Simulation</button>
+    </div>
+
+    <div id="resultArea"></div>
+
+    <div id="gantt-chart" class="gantt-wrapper"></div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
