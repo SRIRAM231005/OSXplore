@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disk Scheduling Algorithm Visualizer</title>
+    <link rel="stylesheet" href="DiskScheduling.css">
+    
+</head>
+<body>
+    <header>
+        <h1>Disk Scheduling Algorithm Visualizer</h1>
+        <p class="subtitle">Interactive visualization of common disk scheduling algorithms</p>
+    </header>
+
+    <main>
+        <section class="controls">
+            <div class="control-group">
+                <h3>Algorithm Selection</h3>
+                <label for="algorithm">Choose Algorithm:</label>
+                <select id="algorithm">
+                    <option value="fcfs">FCFS (First-Come, First-Served)</option>
+                    <option value="sstf">SSTF (Shortest Seek Time First)</option>
+                    <option value="scan">SCAN (Elevator Algorithm)</option>
+                    <option value="cscan">C-SCAN (Circular SCAN)</option>
+                    <option value="look">LOOK</option>
+                    <option value="clook">C-LOOK</option>
+                </select>
+                
+                <div class="tooltip">
+                    <span class="tooltiptext" id="algorithmDescription">
+                        FCFS: Processes requests in the order they arrive. Simple but can be inefficient.
+                    </span>
+                    <label>Algorithm Description (hover)</label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Disk Configuration</h3>
+                <label for="diskSize">Disk Size (tracks):</label>
+                <input type="number" id="diskSize" min="10" max="1000" value="200">
+                
+                <label for="initialPosition">Initial Head Position:</label>
+                <input type="number" id="initialPosition" min="0" value="50">
+            </div>
+            
+
+            <div class="control-group">
+                <h3>Request Queue</h3>
+                <label for="requests">Request Queue (comma separated):</label>
+                <input type="text" id="requests" placeholder="82, 170, 43, 140, 24, 16, 190" value="82, 170, 43, 140, 24, 16, 190">
+                
+                <div class="queue-controls">
+                    <button id="randomBtn" class="btn-secondary btn-small">Generate Random</button>
+                    <button id="clearBtn" class="btn-secondary btn-small">Clear</button>
+                    <button id="addBtn" class="btn-secondary btn-small">Add Request</button>
+                </div>
+                
+                <label for="direction">Initial Direction (for SCAN/LOOK):</label>
+                <select id="direction">
+                    <option value="up">Upward (toward higher tracks)</option>
+                    <option value="down">Downward (toward lower tracks)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <h3>Animation Controls</h3>
+                <label for="speed">Animation Speed:</label>
+                <input type="range" id="speed" min="10" max="40" value="40">
+                
+                <button id="runBtn">Run Visualization</button>
+                <button id="resetBtn" class="btn-secondary">Reset</button>
+            </div>
+        </section>
+
+        <section class="visualization">
+            <h2>Visualization</h2>
+            
+            <div class="request-queue">
+                <h4>Request Queue: <span id="queueCount">0</span> requests</h4>
+                <div class="queue-items" id="queueItems">
+                    <!-- Queue items will be added here -->
+                </div>
+            </div>
+            
+            <div class="disk-container">
+                <div class="disk-range">
+                    <span id="minTrack">0</span>
+                    <span id="maxTrack">199</span>
+                </div>
+                <div class="track-lines"></div>
+                
+                <div class="disk-head" id="diskHead"></div>
+               
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">Total Seek Operations</div>
+                    <div class="stat-value" id="totalOperations">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Total Seek Distance</div>
+                    <div class="stat-value" id="totalDistance">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Average Seek Length</div>
+                    <div class="stat-value" id="averageSeek">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Algorithm Efficiency</div>
+                    <div class="stat-value" id="efficiency">-</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="algorithms-info">
+            <h2>Understanding Disk Scheduling Algorithms</h2>
+            
+            <div class="algorithm-card">
+                <h3>FCFS (First-Come, First-Served)</h3>
+                <p>In FCFS, disk requests are serviced according to their arrival time. The disk head moves to tracks in the exact order they were requested, without any optimization.</p>
+                <div class="algorithm-pros-cons">
+                    <div class="pros">
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>Simple implementation</li>
+                            <li>Fair (no starvation)</li>
+                            <li>Easy to understand and implement</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Can lead to long seek times</li>
+                            <li>Inefficient with random access patterns</li>
+                            <li>Doesn't optimize for performance</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <h3>SSTF (Shortest Seek Time First)</h3>
+                <p>SSTF selects the request that requires the minimum seek time from the current head position, prioritizing the closest track.</p>
+                <div class="algorithm-pros-cons">
+                    <div class="pros">
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>Better performance than FCFS</li>
+                            <li>Reduced average seek time</li>
+                            <li>More efficient than FCFS</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Can cause starvation for far requests</li>
+                            <li>Not optimal in heavy load situations</li>
+                            <li>More complex than FCFS</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <h3>SCAN (Elevator Algorithm)</h3>
+                <p>The disk head moves in one direction, servicing all requests in its path until it reaches the end, then reverses direction. Similar to how an elevator operates.</p>
+                <div class="algorithm-pros-cons">
+                    <div class="pros">
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>More efficient than FCFS and SSTF</li>
+                            <li>Reduces variance in waiting time</li>
+                            <li>Good for heavy load situations</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Edge tracks may have longer waiting times</li>
+                            <li>Head moves to end even if no requests there</li>
+                            <li>More complex to implement</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <h3>C-SCAN (Circular SCAN)</h3>
+                <p>An improvement of SCAN where the head moves from one end to the other, servicing requests along the way, but then immediately returns to the beginning without servicing any requests on the return trip.</p>
+                <div class="algorithm-pros-cons">
+                    <div class="pros">
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>More uniform waiting time than SCAN</li>
+                            <li>Better for systems with heavy load</li>
+                            <li>More consistent performance</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Slightly longer seek time than SCAN</li>
+                            <li>Wastes time returning to start</li>
+                            <li>Complex implementation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <h3>LOOK</h3>
+                <p>A variant of SCAN where the disk head only goes as far as the last request in each direction, then reverses, rather than going all the way to the end of the disk.</p>
+                <div class="algorithm-pros-cons">
+                    <div class="pros">
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>Avoids unnecessary movement to disk ends</li>
+                            <li>More efficient than SCAN</li>
+                            <li>Better average performance</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Implementation more complex than SCAN</li>
+                            <li>Still has some inefficiencies</li>
+                            <li>Direction changes can be frequent</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="algorithm-card">
+                <h3>C-LOOK</h3>
+                <p>Similar to C-SCAN, but the head only goes as far as the last request in the current direction, then jumps back to the furthest request in the other direction without servicing intermediate requests.</p>
+                <div class="algorithm-pros-cons">
+                    <div class="pros">
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>Combines benefits of C-SCAN and LOOK</li>
+                            <li>Minimizes unnecessary head movement</li>
+                            <li>Most efficient of the algorithms</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Most complex to implement</li>
+                            <li>Requires more computation</li>
+                            <li>Harder to understand</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Disk Scheduling Algorithm Visualizer | Created for educational purposes</p>
+    </footer>
+
+    <script src="DiskScheduling.js"></script>
