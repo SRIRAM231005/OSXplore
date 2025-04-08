@@ -233,53 +233,83 @@
     }
   
     function simulatePriority() {
-      const sorted = [...processes].sort((a, b) => {
-        if (a.arrival === b.arrival) return a.priority - b.priority;
-        return a.arrival - b.arrival;
-      });
-  
-      let time = 0, totalWT = 0, totalTAT = 0;
-      const schedule = [];
-      const completed = [];
-      let result = `<h3>Priority Scheduling</h3><table>
-        <tr><th>Process</th><th>AT</th><th>BT</th><th>Priority</th><th>CT</th><th>TAT</th><th>WT</th></tr>`;
-  
-      while (completed.length < processes.length) {
-        const available = sorted.filter(p => p.arrival <= time && !completed.includes(p.id));
-        if (available.length === 0) {
+      const n = processes.length;
+      let time = 0, completed = 0;
+      const remaining = processes.map(p => p.burst);
+      const waitingTime = Array(n).fill(0);
+      const turnAroundTime = Array(n).fill(0);
+      const completionTime = Array(n).fill(0);
+      const timeline = [];
+      const isDone = Array(n).fill(false);
+    
+      while (completed < n) {
+        let idx = -1;
+        let highestPriority = Infinity;
+    
+        for (let i = 0; i < n; i++) {
+          if (processes[i].arrival <= time && remaining[i] > 0) {
+            if (processes[i].priority < highestPriority) {
+              highestPriority = processes[i].priority;
+              idx = i;
+            }
+          }
+        }
+    
+        if (idx === -1) {
+          timeline.push("idle");
           time++;
           continue;
         }
-  
-        available.sort((a, b) => a.priority - b.priority);
-        const current = available[0];
-        const start = time;
-        time += current.burst;
-        const tat = time - current.arrival;
-        const wt = tat - current.burst;
-  
-        totalWT += wt;
-        totalTAT += tat;
-        completed.push(current.id);
-  
-        result += `<tr>
-          <td>P${current.id}</td>
-          <td>${current.arrival}</td>
-          <td>${current.burst}</td>
-          <td>${current.priority}</td>
-          <td>${time}</td>
-          <td>${tat}</td>
-          <td>${wt}</td>
-        </tr>`;
-  
-        schedule.push({ pid: `P${current.id}`, start, end: time });
+    
+        remaining[idx]--;
+        timeline.push(`P${processes[idx].id}`);
+        time++;
+    
+        if (remaining[idx] === 0) {
+          completed++;
+          completionTime[idx] = time;
+          turnAroundTime[idx] = time - processes[idx].arrival;
+          waitingTime[idx] = turnAroundTime[idx] - processes[idx].burst;
+        }
       }
-  
-      result += `</table><p><strong>Average Waiting Time:</strong> ${(totalWT / processes.length).toFixed(2)}</p>
-        <p><strong>Average Turnaround Time:</strong> ${(totalTAT / processes.length).toFixed(2)}</p>`;
+    
+      let result = `<h3>Preemptive Priority Scheduling</h3><table>
+        <tr><th>Process</th><th>AT</th><th>BT</th><th>Priority</th><th>CT</th><th>TAT</th><th>WT</th></tr>`;
+      let avgWT = 0, avgTAT = 0;
+    
+      for (let i = 0; i < n; i++) {
+        avgWT += waitingTime[i];
+        avgTAT += turnAroundTime[i];
+    
+        result += `<tr>
+          <td>P${processes[i].id}</td>
+          <td>${processes[i].arrival}</td>
+          <td>${processes[i].burst}</td>
+          <td>${processes[i].priority}</td>
+          <td>${completionTime[i]}</td>
+          <td>${turnAroundTime[i]}</td>
+          <td>${waitingTime[i]}</td>
+        </tr>`;
+      }
+    
+      result += `</table><p><strong>Average Waiting Time:</strong> ${(avgWT / n).toFixed(2)}</p>
+        <p><strong>Average Turnaround Time:</strong> ${(avgTAT / n).toFixed(2)}</p>`;
+    
+      // Compress timeline to Gantt format
+      let schedule = [];
+      let current = timeline[0], start = 0;
+      for (let i = 1; i <= timeline.length; i++) {
+        if (timeline[i] !== current) {
+          schedule.push({ pid: current, start, end: i });
+          current = timeline[i];
+          start = i;
+        }
+      }
+    
       resultArea.innerHTML = result;
       displayGanttChart(schedule);
     }
+    
   });
   
   function displayGanttChart(schedule) {
