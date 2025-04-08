@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #222;
+    background-color: #1a202c;
     color: white;
     display: flex;
     justify-content: center;
@@ -19,6 +19,7 @@ body {
     width: 80%;
     height: 90vh;
     border: 2px solid white;
+    border-radius: 20px;
 }
 
 /* Chat UI */
