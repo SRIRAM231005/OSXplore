@@ -5,97 +5,296 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Replacement Algorithm Visualization</title>
     <style>
-     body {
+       /* Reset and Base Styles */
+body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-    background-color: #0d1117;
+    padding: 0;
+    margin: 0;
+    background-color: #0a0d1a;
     color: #e6edf3;
 }
 
-h1, h2, h3 {
-    color: #58a6ff;
+/* Header Section */
+.header {
+    background-color: #131b36;
+    padding: 2rem 1rem;
     text-align: center;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 30px;
+.header h1 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 600;
 }
 
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #161b22;
+.header p {
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Controls Panel */
+.controls-panel {
+    background-color: #131b30;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    border: 1px solid #30363d;
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+    max-width: 900px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
 }
 
 .control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    margin-bottom: 1rem;
 }
 
-label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #8b949e;
+.control-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #a8b1cf;
+    font-size: 0.95rem;
 }
 
-select, input, button {
-    padding: 8px 12px;
+.control-group select,
+.control-group input {
+    width: 100%;
+    padding: 0.7rem;
     border-radius: 4px;
-    border: 1px solid #30363d;
-    background-color: #0d1117;
-    color: #e6edf3;
-}
-
-select:focus, input:focus {
-    outline: none;
-    border-color: #1f6feb;
-    box-shadow: 0 0 0 2px rgba(56, 139, 253, 0.25);
-}
-
-button {
-    background-color: #1f6feb;
+    border: 1px solid #253051;
+    background-color: #0c1224;
     color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
+    font-size: 0.95rem;
 }
 
-button:hover {
-    background-color: #2f81f7;
+.control-group select:focus,
+.control-group input:focus {
+    outline: none;
+    border-color: #2a3f8d;
+    box-shadow: 0 0 0 2px rgba(42, 63, 141, 0.25);
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #2a3f8d;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #3a51a8;
     transform: translateY(-2px);
 }
 
-button:disabled {
-    background-color: #2d333b;
+.btn-secondary {
+    background-color: #1e2640;
+    color: #bcc3e4;
+}
+
+.btn-secondary:hover {
+    background-color: #2a3454;
+}
+
+.btn:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none;
 }
 
-#reference-string {
-    width: 100%;
-    padding: 8px;
+/* Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 1.5rem auto;
+    max-width: 900px;
+    background-color: #131b30;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.legend-label {
+    font-size: 0.9rem;
+    color: #a8b1cf;
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1.5rem auto;
+    max-width: 900px;
+}
+
+.btn-nav {
+    padding: 0.6rem 1.25rem;
+    border-radius: 4px;
+    border: none;
+    background-color: #1e2640;
+    color: #bcc3e4;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-nav:hover {
+    background-color: #2a3454;
+}
+
+.btn-play {
+    background-color: #1a5d3a;
+    color: white;
+}
+
+.btn-play:hover {
+    background-color: #207245;
+}
+
+.btn-nav:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #16192a;
+}
+
+/* Icons */
+.icon {
+    font-size: 1rem;
+}
+
+/* Tab System */
+.tabs {
+    display: flex;
+    gap: 5px;
+    margin: 0 auto;
+    max-width: 900px;
+    margin-bottom: 0;
+}
+
+.tab {
+    padding: 0.7rem 1.5rem;
+    background-color: #131b30;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #253051;
+    border-bottom: none;
+    color: #a8b1cf;
+    transition: background-color 0.3s;
+}
+
+.tab:hover {
+    background-color: #1e2640;
+}
+
+.tab.active {
+    background-color: #2a3f8d;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.tab-content {
+    border: 1px solid #253051;
+    padding: 1.5rem;
+    background-color: #131b30;
+    border-radius: 0 5px 5px 5px;
+    margin: 0 auto;
+    max-width: 900px;
+    margin-bottom: 2rem;
 }
 
 .visualization {
-    background-color: #161b22;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    border: 1px solid #30363d;
+    padding: 0;
+}
+        
+h2, h3 {
+    color: #58a6ff;
+    text-align: center;
+    margin-top: 0;
+}
+
+/* Visualization Elements */
+.reference-display {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #2a3f8d #0a0d1a;
+}
+
+.reference-display::-webkit-scrollbar {
+    height: 8px;
+}
+
+.reference-display::-webkit-scrollbar-track {
+    background: #0c1224;
+    border-radius: 4px;
+}
+
+.reference-display::-webkit-scrollbar-thumb {
+    background-color: #2a3f8d;
+    border-radius: 4px;
+}
+
+.reference-cell {
+    flex: 0 0 40px;
+    height: 40px;
+    border: 1px solid #253051;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0c1224;
+    font-weight: bold;
+    color: #e6edf3;
+}
+
+.reference-cell.current {
+    background-color: #2a3f8d;
+    color: white;
+    border-color: #1e2640;
+    box-shadow: 0 0 10px rgba(42, 63, 141, 0.7);
 }
 
 .frame-container {
@@ -104,53 +303,11 @@ button:disabled {
     gap: 10px;
 }
 
-.reference-display {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    scrollbar-width: thin;
-    scrollbar-color: #1f6feb #0d1117;
-}
-
-.reference-display::-webkit-scrollbar {
-    height: 8px;
-}
-
-.reference-display::-webkit-scrollbar-track {
-    background: #0d1117;
-    border-radius: 4px;
-}
-
-.reference-display::-webkit-scrollbar-thumb {
-    background-color: #1f6feb;
-    border-radius: 4px;
-}
-
-.reference-cell {
-    flex: 0 0 40px;
-    height: 40px;
-    border: 1px solid #30363d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #0d1117;
-    font-weight: bold;
-    color: #e6edf3;
-}
-
-.reference-cell.current {
-    background-color: #1f6feb;
-    color: white;
-    border-color: #388bfd;
-    box-shadow: 0 0 10px rgba(31, 111, 235, 0.7);
-}
-
 .frames {
     display: flex;
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: #1f6feb #0d1117;
+    scrollbar-color: #2a3f8d #0a0d1a;
 }
 
 .frames::-webkit-scrollbar {
@@ -158,12 +315,12 @@ button:disabled {
 }
 
 .frames::-webkit-scrollbar-track {
-    background: #0d1117;
+    background: #0c1224;
     border-radius: 4px;
 }
 
 .frames::-webkit-scrollbar-thumb {
-    background-color: #1f6feb;
+    background-color: #2a3f8d;
     border-radius: 4px;
 }
 
@@ -171,179 +328,153 @@ button:disabled {
     display: flex;
     flex-direction: column;
     min-width: 40px;
-    border-right: 1px solid #30363d;
+    border-right: 1px solid #253051;
 }
 
 .frame-cell {
     height: 40px;
     width: 40px;
-    border: 1px solid #30363d;
+    border: 1px solid #253051;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #0d1117;
+    background-color: #0c1224;
     color: #e6edf3;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
-.counter-display {
-    display: flex;
-    overflow-x: auto;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    scrollbar-width: thin;
-    scrollbar-color: #1f6feb #0d1117;
+.frame-cell.page-fault {
+    background-color: #c0392b;
+    color: white;
+    border-color: #a93226;
+    animation: pulse 1s;
 }
 
-.counter-display::-webkit-scrollbar {
-    height: 8px;
+.frame-cell.page-hit {
+    background-color: #1a5d3a;
+    color: white;
+    border-color: #145a32;
+    animation: scale 0.5s;
 }
 
-.counter-display::-webkit-scrollbar-track {
-    background: #0d1117;
-    border-radius: 4px;
+.frame-cell.victim {
+    background-color: #7d3c98;
+    color: white;
+    border-color: #6c3483;
+    animation: fadeOut 1s;
 }
 
-.counter-display::-webkit-scrollbar-thumb {
-    background-color: #1f6feb;
-    border-radius: 4px;
+.status-indicator {
+    position: absolute;
+    top: -22px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    padding: 2px 0;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    opacity: 0.9;
 }
 
-.counter-column {
-    display: flex;
-    flex-direction: column;
-    min-width: 40px;
-    border-right: 1px solid #30363d;
+.status-indicator.fault {
+    background-color: #c0392b;
+    color: white;
 }
 
-.counter-cell {
-    height: 30px;
-    width: 40px;
-    border: 1px solid #30363d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #0d1117;
-    font-size: 0.8rem;
-    color: #e6edf3;
+.status-indicator.hit {
+    background-color: #1a5d3a;
+    color: white;
 }
 
 .results {
     margin-top: 20px;
     padding: 15px;
-    background-color: #0d419d;
+    background-color: #131b36;
     border-radius: 8px;
-    border: 1px solid #1f6feb;
+    border: 1px solid #2a3f8d;
     color: #e6edf3;
+}
+
+.step-message {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #131b30;
+    border-radius: 8px;
+    border: 1px solid #253051;
+    font-weight: bold;
+    text-align: center;
 }
 
 .algorithm-info {
     margin-top: 20px;
     padding: 15px;
-    background-color: #1c2535;
-    border-radius: 8px;
-    border: 1px solid #244675;
 }
 
-.step-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin: 15px 0;
-}
-
-.legend {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin: 20px 0;
-    background-color: #1c2535;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #244675;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.legend-text {
-    font-weight: bold;
-}
-
-.tabs {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 15px;
-}
-
-.tab {
-    padding: 10px 15px;
-    background-color: #1c2535;
-    cursor: pointer;
-    border-radius: 5px 5px 0 0;
-    border: 1px solid #30363d;
-    border-bottom: none;
-    color: #8b949e;
-    transition: background-color 0.3s;
-}
-
-.tab:hover {
-    background-color: #21293b;
-}
-
-.tab.active {
-    background-color: #1f6feb;
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.tab-content {
-    border: 1px solid #30363d;
-    padding: 15px;
-    background-color: #161b22;
-    border-radius: 0 5px 5px 5px;
-}
-
-/* Cell status indicators */
-.frame-cell.page-fault:after {
-    content: "(F)";
-    font-size: 0.7rem;
+/* Badges */
+.badge {
     position: absolute;
+    padding: 2px 4px;
+    font-size: 9px;
+    font-weight: bold;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.badge.fault {
+    background-color: #c0392b;
+    color: white;
+    bottom: 2px;
+    right: 2px;
+}
+
+.badge.hit {
+    background-color: #1a5d3a;
+    color: white;
+    bottom: 2px;
+    right: 2px;
+}
+
+.badge.victim {
+    background-color: #7d3c98;
+    color: white;
     top: 2px;
-    right: 2px;
-}
-
-.frame-cell.accessed:after {
-    content: "(A)";
-    font-size: 0.7rem;
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-}
-
-.frame-cell.victim:after {
-    content: "(V)";
-    font-size: 0.7rem;
-    position: absolute;
-    bottom: 2px;
     left: 2px;
 }
 
-.frame-cell {
-    position: relative;
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
 }
     </style>
 </head>
 <body>
-    <h1>Page Replacement Algorithm Visualization</h1>
-    
-    <div class="container">
-        <div class="controls">
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Page Replacement Algorithm Visualization</h1>
+        <p>Interactive tool to visualize and understand how different page replacement algorithms work in operating systems</p>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+        <div class="controls-grid">
             <div class="control-group">
-                <label for="algorithm">Algorithm:</label>
+                <label for="algorithm">Algorithm</label>
                 <select id="algorithm">
                     <option value="fifo">FIFO (First-In-First-Out)</option>
                     <option value="lru">LRU (Least Recently Used)</option>
@@ -354,84 +485,111 @@ button:disabled {
             </div>
             
             <div class="control-group">
-                <label for="frames">Number of Frames:</label>
+                <label for="frames">Number of Frames</label>
                 <input type="number" id="frames" min="1" max="10" value="3">
             </div>
             
             <div class="control-group">
-                <label for="reference-string">Reference String:</label>
+                <label for="reference-string">Reference String</label>
                 <input type="text" id="reference-string" value="7 0 1 2 0 3 0 4 2 3 0 3 2 1 2 0 1 7 0 1">
             </div>
-            
-            <div class="control-group">
-                <button id="start">Start Visualization</button>
-                <button id="reset" disabled>Reset</button>
-            </div>
         </div>
         
-        <div class="step-buttons">
-            <button id="prev-step" disabled>Previous Step</button>
-            <button id="next-step" disabled>Next Step</button>
-            <button id="auto-play" disabled>Auto Play</button>
+        <div class="button-group">
+            <button id="start" class="btn btn-primary">
+                <span class="icon">▶</span> Start Visualization
+            </button>
+            <button id="reset" class="btn btn-secondary" disabled>
+                <span class="icon">⟲</span> Reset
+            </button>
         </div>
-        
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <button id="prev-step" class="btn-nav" disabled>
+            <span class="icon">◀</span> Previous
+        </button>
+        <button id="next-step" class="btn-nav" disabled>
+            Next <span class="icon">▶</span>
+        </button>
+        <button id="auto-play" class="btn-nav btn-play" disabled>
+            <span class="icon">⏵</span> Auto Play
+        </button>
+    </div>
     
-        
-        <div class="tabs">
-            <div class="tab active" data-tab="visualization">Visualization</div>
-            <div class="tab" data-tab="algorithm-info">Algorithm Info</div>
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #4c5fec;"></div>
+            <span class="legend-label">Current Reference</span>
         </div>
-        
-        <div class="tab-content" id="visualization-tab">
-            <div class="visualization">
-                <h2>Page Reference Sequence</h2>
-                <div class="reference-display" id="reference-display"></div>
-                
-                <h2>Memory Frames</h2>
-                <div class="frame-container">
-                    <div class="frames" id="frames-display"></div>
-                </div>
-                
-                <div id="counter-section" style="display: none;">
-                    <h3>Page Counters</h3>
-                    <div class="counter-display" id="counter-display"></div>
-                </div>
-                
-                <div class="results" id="results">
-                    <p>Press "Start Visualization" to begin...</p>
-                </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #2ecc71;"></div>
+            <span class="legend-label">Page Hit</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #e74c3c;"></div>
+            <span class="legend-label">Page Fault</span>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-tab="visualization">Visualization</div>
+        <div class="tab" data-tab="algorithm-info">Algorithm Info</div>
+    </div>
+    
+    <!-- Visualization Tab Content -->
+    <div class="tab-content" id="visualization-tab">
+        <div class="visualization">
+            <h2>Page Reference Sequence</h2>
+            <div class="reference-display" id="reference-display"></div>
+            
+            <div id="step-message" class="step-message">
+                Press "Start Visualization" to begin...
+            </div>
+            
+            <h2>Memory Frames</h2>
+            <div class="frame-container">
+                <div class="frames" id="frames-display"></div>
+            </div>
+            
+            <div class="results" id="results">
+                <p>Press "Start Visualization" to begin...</p>
             </div>
         </div>
-        
-        <div class="tab-content" id="algorithm-info-tab" style="display:none;">
-            <div class="algorithm-info">
-                <h2>Page Replacement Algorithms</h2>
-                
-                <h3>FIFO (First-In-First-Out)</h3>
-                <p>The simplest page replacement algorithm that replaces the oldest page in memory. It maintains a queue of pages, where the oldest page is at the front of the queue.</p>
-                <p><strong>Advantage:</strong> Simple to implement and understand.</p>
-                <p><strong>Disadvantage:</strong> Does not consider page usage frequency, leading to potential replacement of frequently used pages.</p>
-                
-                <h3>LRU (Least Recently Used)</h3>
-                <p>Replaces the page that has not been used for the longest period of time. It keeps track of when each page was last accessed.</p>
-                <p><strong>Advantage:</strong> Better performance than FIFO as it considers temporal locality.</p>
-                <p><strong>Disadvantage:</strong> Requires additional overhead to track page usage history.</p>
-                
-                <h3>Optimal</h3>
-                <p>Replaces the page that will not be used for the longest period of time in the future. This is a theoretical algorithm that requires future knowledge of page references.</p>
-                <p><strong>Advantage:</strong> Provides the lowest possible page fault rate, serves as a benchmark.</p>
-                <p><strong>Disadvantage:</strong> Not practically implementable in real systems as it requires knowledge of future references.</p>
-                
-                <h3>LFU (Least Frequently Used)</h3>
-                <p>Replaces the page that has been used least frequently. It keeps a counter for each page and increments it on each access.</p>
-                <p><strong>Advantage:</strong> Can perform better than LRU when access patterns have cyclical behavior.</p>
-                <p><strong>Disadvantage:</strong> May keep pages with high historical frequency but no recent usage, leading to potential thrashing.</p>
-                
-                <h3>MFU (Most Frequently Used)</h3>
-                <p>Replaces the page that has been used most frequently. Based on the logic that pages with high frequency counter values have completed their use and won't be used again soon.</p>
-                <p><strong>Advantage:</strong> Can work well in certain specialized workloads.</p>
-                <p><strong>Disadvantage:</strong> Generally performs worse than LFU and LRU in most common scenarios.</p>
-            </div>
+    </div>
+    
+    <!-- Algorithm Info Tab Content -->
+    <div class="tab-content" id="algorithm-info-tab" style="display:none;">
+        <div class="algorithm-info">
+            <h2>Page Replacement Algorithms</h2>
+            
+            <h3>FIFO (First-In-First-Out)</h3>
+            <p>The simplest page replacement algorithm that replaces the oldest page in memory. It maintains a queue of pages, where the oldest page is at the front of the queue.</p>
+            <p><strong>Advantage:</strong> Simple to implement and understand.</p>
+            <p><strong>Disadvantage:</strong> Does not consider page usage frequency, leading to potential replacement of frequently used pages.</p>
+            
+            <h3>LRU (Least Recently Used)</h3>
+            <p>Replaces the page that has not been used for the longest period of time. It keeps track of when each page was last accessed.</p>
+            <p><strong>Advantage:</strong> Better performance than FIFO as it considers temporal locality.</p>
+            <p><strong>Disadvantage:</strong> Requires additional overhead to track page usage history.</p>
+            
+            <h3>Optimal</h3>
+            <p>Replaces the page that will not be used for the longest period of time in the future. This is a theoretical algorithm that requires future knowledge of page references.</p>
+            <p><strong>Advantage:</strong> Provides the lowest possible page fault rate, serves as a benchmark.</p>
+            <p><strong>Disadvantage:</strong> Not practically implementable in real systems as it requires knowledge of future references.</p>
+            
+            <h3>LFU (Least Frequently Used)</h3>
+            <p>Replaces the page that has been used least frequently. It keeps a counter for each page and increments it on each access.</p>
+            <p><strong>Advantage:</strong> Can perform better than LRU when access patterns have cyclical behavior.</p>
+            <p><strong>Disadvantage:</strong> May keep pages with high historical frequency but no recent usage, leading to potential thrashing.</p>
+            
+            <h3>MFU (Most Frequently Used)</h3>
+            <p>Replaces the page that has been used most frequently. Based on the logic that pages with high frequency counter values have completed their use and won't be used again soon.</p>
+            <p><strong>Advantage:</strong> Can work well in certain specialized workloads.</p>
+            <p><strong>Disadvantage:</strong> Generally performs worse than LFU and LRU in most common scenarios.</p>
         </div>
     </div>
 
@@ -448,9 +606,8 @@ button:disabled {
             const autoPlayButton = document.getElementById('auto-play');
             const referenceDisplay = document.getElementById('reference-display');
             const framesDisplay = document.getElementById('frames-display');
-            const counterSection = document.getElementById('counter-section');
-            const counterDisplay = document.getElementById('counter-display');
             const resultsDiv = document.getElementById('results');
+            const stepMessageDiv = document.getElementById('step-message');
             const tabs = document.querySelectorAll('.tab');
             const tabContents = document.querySelectorAll('.tab-content');
             
@@ -481,9 +638,8 @@ button:disabled {
                 
                 referenceDisplay.innerHTML = '';
                 framesDisplay.innerHTML = '';
-                counterDisplay.innerHTML = '';
-                counterSection.style.display = 'none';
                 resultsDiv.innerHTML = '<p>Press "Start Visualization" to begin...</p>';
+                stepMessageDiv.innerHTML = 'Press "Start Visualization" to begin...';
                 
                 referenceString = [];
                 frames = [];
@@ -532,10 +688,6 @@ button:disabled {
                 // Reset page load order
                 pageLoadOrder = [];
                 
-                // Show counter section for LFU and MFU
-                const isFrequencyBased = ['lfu', 'mfu'].includes(algorithmSelect.value);
-                counterSection.style.display = isFrequencyBased ? 'block' : 'none';
-                
                 // Update UI
                 algorithmSelect.disabled = true;
                 framesInput.disabled = true;
@@ -548,9 +700,6 @@ button:disabled {
                 // Initialize visualization
                 renderReferenceString();
                 renderFrames();
-                if (isFrequencyBased) {
-                    renderCounters();
-                }
                 currentStep = -1;
                 pageFaults = 0;
                 pageHits = 0;
@@ -560,9 +709,11 @@ button:disabled {
                     pageFault: false, 
                     victim: null, 
                     accessed: null,
-                    pageLoadOrder: [...pageLoadOrder]
+                    pageLoadOrder: [...pageLoadOrder],
+                    stepDescription: "Initial state: All frames are empty."
                 }];
                 
+                stepMessageDiv.innerHTML = "Initial state: All frames are empty. Press 'Next Step' to begin.";
                 updateResults();
             });
             
@@ -623,66 +774,25 @@ button:disabled {
                     referenceDisplay.appendChild(cell);
                 });
             }
+
+            // Render memory frames with status indicators
             function renderFrames() {
-    framesDisplay.innerHTML = '';
-    
-    // Create initial column for frame numbers
-    const frameNumberColumn = document.createElement('div');
-    frameNumberColumn.className = 'frame-column';
-    
-    for (let i = 0; i < frames.length; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'frame-cell';
-        cell.textContent = `F${i}`;
-        cell.style.fontWeight = 'bold';
-        cell.style.backgroundColor = '#2d333b';
-        frameNumberColumn.appendChild(cell);
-    }
-    
-    framesDisplay.appendChild(frameNumberColumn);
-    
-    // Create a column for each step in history
-    for (let i = 0; i <= currentStep + 1; i++) {
-        if (i >= history.length) continue;
-        
-        const state = history[i];
-        const column = document.createElement('div');
-        column.className = 'frame-column';
-        column.id = `step-${i}`;
-        
-        for (let j = 0; j < frames.length; j++) {
-            const cell = document.createElement('div');
-            cell.className = 'frame-cell';
-            
-            // Set content
-            if (state.frames[j] !== null) {
-                cell.textContent = state.frames[j];
-            }
-            
-            column.appendChild(cell);
-        }
-        
-        framesDisplay.appendChild(column);
-    }
-}
-            function renderCounters() {
-                counterDisplay.innerHTML = '';
+                framesDisplay.innerHTML = '';
                 
-                // Create initial column for page numbers
-                const pageNumberColumn = document.createElement('div');
-                pageNumberColumn.className = 'counter-column';
+                // Create initial column for frame numbers
+                const frameNumberColumn = document.createElement('div');
+                frameNumberColumn.className = 'frame-column';
                 
-                // Add a cell for each possible page
-                for (const page in counters) {
+                for (let i = 0; i < frames.length; i++) {
                     const cell = document.createElement('div');
-                    cell.className = 'counter-cell';
-                    cell.textContent = `Page ${page}`;
+                    cell.className = 'frame-cell';
+                    cell.textContent = `F${i}`;
                     cell.style.fontWeight = 'bold';
                     cell.style.backgroundColor = '#2d333b';
-                    pageNumberColumn.appendChild(cell);
+                    frameNumberColumn.appendChild(cell);
                 }
                 
-                counterDisplay.appendChild(pageNumberColumn);
+                framesDisplay.appendChild(frameNumberColumn);
                 
                 // Create a column for each step in history
                 for (let i = 0; i <= currentStep + 1; i++) {
@@ -690,289 +800,312 @@ button:disabled {
                     
                     const state = history[i];
                     const column = document.createElement('div');
-                    column.className = 'counter-column';
-                    column.id = `counter-step-${i}`;
+                    column.className = 'frame-column';
+                    column.id = `step-${i}`;
                     
-                    // Add a cell for each page counter
-                    for (const page in state.counters) {
+                    // For the current step, add a header indicator
+                    if (i === currentStep + 1 && i > 0) {
+                        const stepHeader = document.createElement('div');
+                        if (state.pageFault) {
+                            stepHeader.className = 'status-indicator fault';
+                            stepHeader.textContent = 'PAGE FAULT';
+                        } else if (state.accessed !== null) {
+                            stepHeader.className = 'status-indicator hit';
+                            stepHeader.textContent = 'PAGE HIT';
+                        }
+                        column.appendChild(stepHeader);
+                    }
+                    
+                    for (let j = 0; j < frames.length; j++) {
                         const cell = document.createElement('div');
-                        cell.className = 'counter-cell';
-                        cell.textContent = state.counters[page];
+                        cell.className = 'frame-cell';
                         
-                        // Highlight the accessed page in this step
-                        if (i > 0 && parseInt(page) === state.accessed) {
-                            cell.classList.add('accessed');
+                        // Set content
+                        if (state.frames[j] !== null) {
+                            cell.textContent = state.frames[j];
+                            
+                            // Add status badges for the current step
+                            if (i === currentStep + 1 && i > 0) {
+                                // Page was just added due to fault
+                                if (state.pageFault && state.frames[j] === state.accessed) {
+                                    cell.classList.add('page-fault');
+                                    const badge = document.createElement('span');
+                                    badge.className = 'badge fault';
+                                    badge.textContent = 'fault';
+                                    cell.appendChild(badge);
+                                }
+                                // Page was accessed (hit)
+                                else if (!state.pageFault && state.frames[j] === state.accessed) {
+                                    cell.classList.add('page-hit');
+                                    const badge = document.createElement('span');
+                                    badge.className = 'badge hit';
+                                    badge.textContent = 'hit';
+                                    cell.appendChild(badge);
+                                }
+                                // Page was replaced (victim)
+                                else if (state.victim === state.frames[j] && state.victim !== null) {
+                                    cell.classList.add('victim');
+                                    const badge = document.createElement('span');
+                                    badge.className = 'badge victim';
+                                    badge.textContent = 'out';
+                                    cell.appendChild(badge);
+                                }
+                            }
                         }
                         
                         column.appendChild(cell);
                     }
-                    
-                    counterDisplay.appendChild(column);
+                    framesDisplay.appendChild(column);
                 }
             }
             
-            // Update results display
+            // Update results
             function updateResults() {
                 if (currentStep < 0) {
-                    resultsDiv.innerHTML = '<p>Press "Next Step" to begin...</p>';
+                    resultsDiv.innerHTML = '<p>Press "Start Visualization" to begin...</p>';
                     return;
                 }
                 
-                const totalSteps = currentStep + 1;
-                const faultRate = totalSteps > 0 ? (pageFaults / totalSteps * 100).toFixed(2) : 0;
-                const hitRate = totalSteps > 0 ? (pageHits / totalSteps * 100).toFixed(2) : 0;
+                const totalSteps = Math.min(currentStep + 1, referenceString.length);
+                const hitRate = (pageHits / totalSteps * 100).toFixed(2);
+                const faultRate = (pageFaults / totalSteps * 100).toFixed(2);
                 
                 resultsDiv.innerHTML = `
-                    <p><strong>Current step:</strong> ${currentStep + 1} of ${referenceString.length}</p>
-                    <p><strong>Page faults:</strong> ${pageFaults} (${faultRate}%)</p>
-                    <p><strong>Page hits:</strong> ${pageHits} (${hitRate}%)</p>
+                    <p><strong>Step:</strong> ${currentStep + 1} of ${referenceString.length}</p>
+                    <p><strong>Page Faults:</strong> ${pageFaults} (${faultRate}%)</p>
+                    <p><strong>Page Hits:</strong> ${pageHits} (${hitRate}%)</p>
                 `;
-                
-                // Update reference string highlighting
-                document.querySelectorAll('.reference-cell').forEach(cell => cell.classList.remove('current'));
-                if (currentStep >= 0 && currentStep < referenceString.length) {
-                    document.getElementById(`ref-${currentStep}`).classList.add('current');
-                }
             }
             
-            // Next step logic
+            // Execute next step
             function nextStep() {
-                if (currentStep >= referenceString.length - 1) return;
-                
-                currentStep++;
-                const page = referenceString[currentStep];
-                
-                // Check if page is already in frames
-                const frameIndex = frames.indexOf(page);
-                let pageFault = false;
-                let victim = null;
-                
-                if (frameIndex === -1) {
-                    // Page fault
-                    pageFault = true;
-                    pageFaults++;
-                    
-                    // Find frame to replace based on algorithm
-                    let replaceIndex;
-                    
-                    if (frames.includes(null)) {
-                        // There's an empty frame
-                        replaceIndex = frames.indexOf(null);
-                    } else {
-                        // Need to replace a page
-                        switch (algorithmSelect.value) {
-                            case 'fifo':
-                                replaceIndex = getFIFOReplacement();
-                                break;
-                            case 'lru':
-                                replaceIndex = getLRUReplacement();
-                                break;
-                            case 'optimal':
-                                replaceIndex = getOptimalReplacement(currentStep);
-                                break;
-                            case 'lfu':
-                                replaceIndex = getLFUReplacement();
-                                break;
-                            case 'mfu':
-                                replaceIndex = getMFUReplacement();
-                                break;
-                            default:
-                                replaceIndex = 0;
-                        }
-                    }
-                    
-                    // Record victim before replacement
-                    victim = frames[replaceIndex];
-                    
-                    // Replace page
-                    frames[replaceIndex] = page;
-                    
-                    // Update page load order for FIFO
-                    if (victim !== null) {
-                        // Remove victim from load order
-                        const victimIndex = pageLoadOrder.indexOf(victim);
-                        if (victimIndex !== -1) {
-                            pageLoadOrder.splice(victimIndex, 1);
-                        }
-                    }
-                    // Add new page to end of load order
-                    pageLoadOrder.push(page);
-                } else {
-                    // Page hit
-                    pageHits++;
+                // Check if there are more steps to process
+                if (currentStep >= referenceString.length - 1) {
+                    return;
                 }
                 
-                // Increment counter for this page (for LFU/MFU)
-                counters[page]++;
+                currentStep++;
                 
-                // Save history
-                history[currentStep + 1] = { 
-                    frames: [...frames], 
-                    counters: {...counters},
-                    pageFault, 
-                    victim, 
+                // Get the current page to be accessed
+                const page = referenceString[currentStep];
+                
+                // Highlight current reference
+                const refCells = document.querySelectorAll('.reference-cell');
+                refCells.forEach(cell => cell.classList.remove('current'));
+                document.getElementById(`ref-${currentStep}`).classList.add('current');
+                
+                // Clone the current state
+                const currentFrames = [...history[history.length - 1].frames];
+                const currentCounters = {...history[history.length - 1].counters};
+                const currentPageLoadOrder = [...history[history.length - 1].pageLoadOrder];
+                
+                // Check if page already exists in frames (hit)
+                const existingIndex = currentFrames.indexOf(page);
+                let pageFault = existingIndex === -1;
+                let victim = null;
+                let description = "";
+                
+                // Update counters for LFU/MFU
+                if (currentCounters.hasOwnProperty(page)) {
+                    currentCounters[page]++;
+                } else {
+                    currentCounters[page] = 1;
+                }
+                
+                // Process according to algorithm
+                if (!pageFault) {
+                    
+
+                    // Page hit
+                    pageHits++;
+                    description = `Page ${page} found in frame ${existingIndex}. This is a page hit.`;
+                    
+                    // For LRU, update the order to mark this page as most recently used
+                    if (algorithmSelect.value === 'lru') {
+                        // Remove page from its current position and add it to the end (most recently used)
+                        const pageIndex = currentPageLoadOrder.indexOf(page);
+                        if (pageIndex !== -1) {
+                            currentPageLoadOrder.splice(pageIndex, 1);
+                        }
+                        currentPageLoadOrder.push(page);
+                        description += " LRU order updated.";
+                    }
+                } else {
+                    // Page fault
+                    pageFaults++;
+                    
+                    // Find an empty frame or select a victim based on algorithm
+                    const emptyFrameIndex = currentFrames.indexOf(null);
+                    
+                    if (emptyFrameIndex !== -1) {
+                        // Empty frame available
+                        currentFrames[emptyFrameIndex] = page;
+                        currentPageLoadOrder.push(page);
+                        description = `Page ${page} loaded into empty frame ${emptyFrameIndex}. This is a page fault.`;
+                    } else {
+                        // No empty frames, need to replace a page
+                        let victimIndex = 0;
+                        
+                        // Apply the selected algorithm
+                        switch (algorithmSelect.value) {
+                            case 'fifo':
+                                // First page in the load order is the victim
+                                const fifoVictim = currentPageLoadOrder[0];
+                                victimIndex = currentFrames.indexOf(fifoVictim);
+                                currentPageLoadOrder.shift();
+                                currentPageLoadOrder.push(page);
+                                description = `FIFO: Page ${fifoVictim} is the oldest page and is selected as victim. Page ${page} loaded into frame ${victimIndex}.`;
+                                break;
+                                
+                            case 'lru':
+                                // Least recently used page is the victim
+                                const lruVictim = currentPageLoadOrder[0];
+                                victimIndex = currentFrames.indexOf(lruVictim);
+                                currentPageLoadOrder.shift();
+                                currentPageLoadOrder.push(page);
+                                description = `LRU: Page ${lruVictim} was used least recently and is selected as victim. Page ${page} loaded into frame ${victimIndex}.`;
+                                break;
+                                
+                            case 'optimal':
+                                // Find page that won't be used for the longest time
+                                let farthestUse = -1;
+                                let farthestPage = -1;
+                                
+                                for (let i = 0; i < currentFrames.length; i++) {
+                                    const currentPage = currentFrames[i];
+                                    // Look for the next occurrence of this page in the future
+                                    let nextUse = Infinity;
+                                    for (let j = currentStep + 1; j < referenceString.length; j++) {
+                                        if (referenceString[j] === currentPage) {
+                                            nextUse = j;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    // If this page won't be used again, select it immediately
+                                    if (nextUse === Infinity) {
+                                        farthestPage = i;
+                                        break;
+                                    }
+                                    
+                                    // Otherwise, select the page with the furthest next use
+                                    if (nextUse > farthestUse) {
+                                        farthestUse = nextUse;
+                                        farthestPage = i;
+                                    }
+                                }
+                                
+                                victimIndex = farthestPage;
+                                const optimalVictim = currentFrames[victimIndex];
+                                description = `Optimal: Page ${optimalVictim} won't be used for the longest time and is selected as victim. Page ${page} loaded into frame ${victimIndex}.`;
+                                currentPageLoadOrder.push(page);
+                                break;
+                                
+                            case 'lfu':
+                                // Find page with lowest access count
+                                let lowestCount = Infinity;
+                                
+                                for (let i = 0; i < currentFrames.length; i++) {
+                                    const pageCount = currentCounters[currentFrames[i]];
+                                    if (pageCount < lowestCount) {
+                                        lowestCount = pageCount;
+                                        victimIndex = i;
+                                    }
+                                }
+                                
+                                const lfuVictim = currentFrames[victimIndex];
+                                description = `LFU: Page ${lfuVictim} has the lowest access count (${lowestCount}) and is selected as victim. Page ${page} loaded into frame ${victimIndex}.`;
+                                currentPageLoadOrder.push(page);
+                                break;
+                                
+                            case 'mfu':
+                                // Find page with highest access count
+                                let highestCount = -1;
+                                
+                                for (let i = 0; i < currentFrames.length; i++) {
+                                    const pageCount = currentCounters[currentFrames[i]];
+                                    if (pageCount > highestCount) {
+                                        highestCount = pageCount;
+                                        victimIndex = i;
+                                    }
+                                }
+                                
+                                const mfuVictim = currentFrames[victimIndex];
+                                description = `MFU: Page ${mfuVictim} has the highest access count (${highestCount}) and is selected as victim. Page ${page} loaded into frame ${victimIndex}.`;
+                                currentPageLoadOrder.push(page);
+                                break;
+                        }
+                        
+                        // Record victim before replacement
+                        victim = currentFrames[victimIndex];
+                        
+                        // Replace the victim page
+                        currentFrames[victimIndex] = page;
+                    }
+                }
+                
+                // Update history with the new state
+                history.push({
+                    frames: [...currentFrames],
+                    counters: {...currentCounters},
+                    pageFault: pageFault,
+                    victim: victim,
                     accessed: page,
-                    pageLoadOrder: [...pageLoadOrder]
-                };
+                    pageLoadOrder: [...currentPageLoadOrder],
+                    stepDescription: description
+                });
                 
                 // Update UI
                 renderFrames();
-                if (['lfu', 'mfu'].includes(algorithmSelect.value)) {
-                    renderCounters();
-                }
                 updateResults();
+                stepMessageDiv.innerHTML = description;
                 
                 // Update button states
-                prevStepButton.disabled = currentStep <= 0;
+                prevStepButton.disabled = false;
                 nextStepButton.disabled = currentStep >= referenceString.length - 1;
             }
             
-            // Previous step logic
+            // Execute previous step
             function prevStep() {
-                if (currentStep <= 0) return;
+                if (currentStep < 0) {
+                    return;
+                }
                 
-                // If this step was a page fault, decrement counter
-                if (history[currentStep + 1].pageFault) {
+                // Revert page fault/hit counters
+                if (history[history.length - 1].pageFault) {
                     pageFaults--;
-                } else {
+                } else if (history[history.length - 1].accessed !== null) {
                     pageHits--;
                 }
                 
-                // Restore previous state
-                frames = [...history[currentStep].frames];
-                counters = {...history[currentStep].counters};
-                pageLoadOrder = [...history[currentStep].pageLoadOrder];
+                // Remove the last history entry
+                history.pop();
                 currentStep--;
                 
                 // Update UI
+                renderReferenceString();
                 renderFrames();
-                if (['lfu', 'mfu'].includes(algorithmSelect.value)) {
-                    renderCounters();
-                }
                 updateResults();
                 
                 // Update button states
-                prevStepButton.disabled = currentStep <= 0;
                 nextStepButton.disabled = false;
+                prevStepButton.disabled = currentStep < 0;
+                
+                // Reset highlight on reference string
+                const refCells = document.querySelectorAll('.reference-cell');
+                refCells.forEach(cell => cell.classList.remove('current'));
+                
+                if (currentStep >= 0) {
+                    document.getElementById(`ref-${currentStep}`).classList.add('current');
+                    stepMessageDiv.innerHTML = history[history.length - 1].stepDescription;
+                } else {
+                    stepMessageDiv.innerHTML = "Initial state: All frames are empty. Press 'Next Step' to begin.";
+                }
             }
             
-            // FIFO replacement policy
-            function getFIFOReplacement() {
-                // In FIFO, we replace the page that has been in memory the longest
-                // This is the first page in our pageLoadOrder array
-                if (pageLoadOrder.length > 0) {
-                    const oldestPage = pageLoadOrder[0];
-                    return frames.indexOf(oldestPage);
-                }
-                return 0; // Default to first frame if something went wrong
-            }
-            
-            // LRU replacement policy
-            function getLRUReplacement() {
-                // For LRU, we need to track when each page was last used
-                // For LRU, we need to track when each page was last used
-                const pageLastUsed = {};
-                    
-                    // Initialize with very old timestamps for all pages in frames
-                    frames.forEach(page => {
-                        if (page !== null) {
-                            pageLastUsed[page] = -1;
-                        }
-                    });
-                    
-                    // Go through history to find the last use of each page
-                    for (let i = 0; i <= currentStep; i++) {
-                        const page = referenceString[i];
-                        if (frames.includes(page)) {
-                            pageLastUsed[page] = i;
-                        }
-                    }
-                    
-                    // Find the page with the smallest timestamp (least recently used)
-                    let lruPage = null;
-                    let lruTimestamp = Infinity;
-                    
-                    for (const page in pageLastUsed) {
-                        if (pageLastUsed[page] < lruTimestamp && frames.includes(parseInt(page))) {
-                            lruTimestamp = pageLastUsed[page];
-                            lruPage = parseInt(page);
-                        }
-                    }
-                    
-                    return frames.indexOf(lruPage);
-                }
-                
-                // Optimal replacement policy
-                function getOptimalReplacement(currentStep) {
-                    // For Optimal, we need to look ahead to find which page won't be used for the longest time
-                    const pageNextUse = {};
-                    
-                    // Initialize with infinity (meaning never used again) for all pages in frames
-                    frames.forEach(page => {
-                        if (page !== null) {
-                            pageNextUse[page] = Infinity;
-                        }
-                    });
-                    
-                    // Look ahead to find next use of each page
-                    for (let i = currentStep + 1; i < referenceString.length; i++) {
-                        const page = referenceString[i];
-                        if (frames.includes(page) && pageNextUse[page] === Infinity) {
-                            pageNextUse[page] = i;
-                        }
-                    }
-                    
-                    // Find the page that won't be used for the longest time
-                    let optimalPage = null;
-                    let maxDistance = -1;
-                    
-                    for (const page in pageNextUse) {
-                        if (pageNextUse[page] > maxDistance && frames.includes(parseInt(page))) {
-                            maxDistance = pageNextUse[page];
-                            optimalPage = parseInt(page);
-                        }
-                    }
-                    
-                    return frames.indexOf(optimalPage);
-                }
-                
-                // LFU replacement policy
-                function getLFUReplacement() {
-                    // For LFU, we replace the page with the lowest access count
-                    let minCount = Infinity;
-                    let lfuPage = null;
-                    
-                    // Find page with minimum access count
-                    frames.forEach(page => {
-                        if (page !== null && counters[page] < minCount) {
-                            minCount = counters[page];
-                            lfuPage = page;
-                        }
-                    });
-                    
-                    return frames.indexOf(lfuPage);
-                }
-                
-                // MFU replacement policy
-                function getMFUReplacement() {
-                    // For MFU, we replace the page with the highest access count
-                    let maxCount = -1;
-                    let mfuPage = null;
-                    
-                    // Find page with maximum access count
-                    frames.forEach(page => {
-                        if (page !== null && counters[page] > maxCount) {
-                            maxCount = counters[page];
-                            mfuPage = page;
-                        }
-                    });
-                    
-                    return frames.indexOf(mfuPage);
-                }
-                
-                // Initialize the visualization
-                init();
-            });
+            // Initialize the visualization
+            init();
+        });
     </script>
 </body>
 </html>
