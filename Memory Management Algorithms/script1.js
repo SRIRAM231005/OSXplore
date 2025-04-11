@@ -539,3 +539,18 @@ window.addEventListener("click", function(event) {
     }
 });
 
+const buttons = document.querySelectorAll('.algo-btn');
+const sections = document.querySelectorAll('.algo-section');
+
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const id = btn.getAttribute('data-algo');
+    sections.forEach(sec => sec.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+  });
+});
+
+
