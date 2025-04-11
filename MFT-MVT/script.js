@@ -499,5 +499,11 @@ function updateMVTAllocationTable() {
 }
 // Initialize the first tab as active
 document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.legend-color')[0].style.backgroundColor = '#cf6679'; // Process
+    document.querySelectorAll('.legend-color')[1].style.backgroundColor = '#03dac6'; // Free Block
+    document.querySelectorAll('.legend-color')[2].style.backgroundColor = '#ffbd59'; // Internal Fragmentation
+    document.querySelectorAll('.legend-color')[3].style.backgroundColor = '#ff7597'; // External Fragmentation
+    
+    // Initialize the first tab as active
     openTab('mft-tab');
 });
