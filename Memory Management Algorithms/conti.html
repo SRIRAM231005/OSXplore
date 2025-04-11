@@ -38,7 +38,7 @@
 
         <!-- Right Side: Memory Visualization -->
         <div class="simulation-container">
-            <h2>Simulation</h2>
+            <h2>Memory Allocation Simulation</h2>
             <div style="display: flex; align-items: center;gap:120px;">
               <div id="memory-visual" class="memory-visual"></div>
               <div id="allocation-table"></div>
@@ -48,23 +48,99 @@
 
     <div id="algoDialog" class="dialog-overlay">
         <div class="dialog-box">
-            <h2 style="margin-bottom: 25px;">Memory Allocation Algorithms</h2>
-            <div class="algo-content">
-                <h3>First Fit</h3>
-                <p>Allocates the first available block that fits the process size.</p>
-    
-                <h3>Best Fit</h3>
-                <p>Finds the smallest block that can accommodate the process, minimizing internal fragmentation.</p>
-    
-                <h3>Worst Fit</h3>
-                <p>Chooses the largest available block, which may increase fragmentation.</p>
-    
-                <h3>Next Fit</h3>
-                <p>Works like First Fit but starts searching from the last allocated position.</p>
+          <h2 style="margin-bottom: 20px;">Memory Allocation Algorithms</h2>
+      
+          <div class="algo-tabs">
+            <button class="algo-btn active" data-algo="firstFit">First Fit</button>
+            <button class="algo-btn" data-algo="bestFit">Best Fit</button>
+            <button class="algo-btn" data-algo="worstFit">Worst Fit</button>
+            <button class="algo-btn" data-algo="nextFit">Next Fit</button>
+          </div>
+      
+          <div class="algo-content">
+            <!-- FIRST FIT -->
+            <div class="algo-section" id="firstFit">
+              <p>Allocates the first available block that fits the process size.</p>
+              <div class="advantages">
+                <h4>Advantages</h4>
+                <ul>
+                  <li>Simple and fast allocation</li>
+                  <li>Low overhead</li>
+                  <li>Quickly finds space for processes</li>
+                </ul>
+              </div>
+              <div class="disadvantages">
+                <h4>Disadvantages</h4>
+                <ul>
+                  <li>Can lead to external fragmentation</li>
+                  <li>Does not always use memory efficiently</li>
+                  <li>Search starts from beginning each time</li>
+                </ul>
+              </div>
             </div>
-            <button class="close-btn">Close</button>
+      
+            <!-- BEST FIT -->
+            <div class="algo-section" id="bestFit" style="display: none;">
+              <p>Finds the smallest block that can accommodate the process, minimizing internal fragmentation.</p>
+              <div class="advantages">
+                <h4>Advantages</h4>
+                <ul>
+                  <li>Minimizes internal fragmentation</li>
+                  <li>Efficient space usage (theoretically)</li>
+                </ul>
+              </div>
+              <div class="disadvantages">
+                <h4>Disadvantages</h4>
+                <ul>
+                  <li>Slow due to full memory scan</li>
+                  <li>Leads to many small unusable holes</li>
+                </ul>
+              </div>
+            </div>
+      
+            <!-- WORST FIT -->
+            <div class="algo-section" id="worstFit" style="display: none;">
+              <p>Chooses the largest available block, which may increase fragmentation.</p>
+              <div class="advantages">
+                <h4>Advantages</h4>
+                <ul>
+                  <li>Leaves larger holes for future processes</li>
+                  <li>May reduce small hole formation</li>
+                </ul>
+              </div>
+              <div class="disadvantages">
+                <h4>Disadvantages</h4>
+                <ul>
+                  <li>Inefficient memory usage</li>
+                  <li>Can still cause external fragmentation</li>
+                </ul>
+              </div>
+            </div>
+      
+            <!-- NEXT FIT -->
+            <div class="algo-section" id="nextFit" style="display: none;">
+              <p>Works like First Fit but starts searching from the last allocated position.</p>
+              <div class="advantages">
+                <h4>Advantages</h4>
+                <ul>
+                  <li>Improves over First Fit for some patterns</li>
+                  <li>More balanced allocation</li>
+                </ul>
+              </div>
+              <div class="disadvantages">
+                <h4>Disadvantages</h4>
+                <ul>
+                  <li>Can miss better blocks earlier in memory</li>
+                  <li>Still causes fragmentation</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+      
+          <button class="close-btn">Close</button>
         </div>
-    </div>
+      </div>
+      
 
     <script src="script1.js"></script>
 </body>
