@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #1a202c;
+    background-color:  #1a202c;
     color: white;
     display: flex;
     justify-content: center;
@@ -18,8 +18,18 @@ body {
     display: flex;
     width: 80%;
     height: 90vh;
-    border: 2px solid white;
+    border: 1.5px solid rgb(172, 5, 243);
     border-radius: 20px;
+    overflow: hidden;
+}
+
+.simulation-container h2{
+    background: linear-gradient(to right, #9002ad, #1f77f3);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 16px #9002ad, 0 0 16px #1f77f3;
+    margin-bottom: 20px;
 }
 
 /* Chat UI */
@@ -50,7 +60,7 @@ body {
 }
 
 .user-message {
-    background: #007bff;
+    background: linear-gradient(to right, #9002ad, #1f77f3);/*#007bff*/
     text-align: right;
 }
 
@@ -246,6 +256,7 @@ body {
     background: rgba(0, 0, 0, 0.6);
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 /* Dialog Box */
@@ -254,7 +265,8 @@ body {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    width: 400px;
+    width: 900px;
+    height: 400px;
     text-align: left;
     color: white;
 }
@@ -284,3 +296,66 @@ body {
 .block-text{
     z-index: 3;
 }
+
+
+
+.algo-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .algo-btn {
+    padding: 8px 14px;
+    background: #2a2a2a;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+  }
+  
+  .algo-btn.active {
+    background: linear-gradient(to right, #9002ad, #1f77f3);
+    color: white;
+    /*border: none;*/
+  }
+  
+  .algo-section {
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+  .advantages, .disadvantages {
+    display: inline-block;
+    width: 48%;
+    vertical-align: top;
+    padding: 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  
+  .advantages {
+    background-color: #1f2f2f;
+    border-left: 4px solid #24e8c2;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .disadvantages {
+    background-color: #3a1f1f;
+    border-left: 4px solid #ff7a7a;
+    color: white;
+  }
+  
+  .advantages h4, .disadvantages h4 {
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .advantages ul li,.disadvantages ul li {
+    padding: 5px;
+  }
+  .advantages ul,.disadvantages ul{
+    padding-left: 10px;
+  }
