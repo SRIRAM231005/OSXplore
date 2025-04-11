@@ -6,8 +6,8 @@
 }
 
 body {
-    background-color: #f7f9fc;
-    color: #333;
+    background-color: #121212;
+    color: #e0e0e0;
     line-height: 1.6;
     padding: 20px;
 }
@@ -16,25 +16,25 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #1e1e1e;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 h1, h2, h3 {
-    color: #2c3e50;
+    color: #bb86fc;
     margin-bottom: 15px;
 }
 
 h1 {
     text-align: center;
     padding-bottom: 15px;
-    border-bottom: 2px solid #ecf0f1;
+    border-bottom: 2px solid #333;
     margin-bottom: 30px;
 }
 
 h2 {
-    border-bottom: 1px solid #ecf0f1;
+    border-bottom: 1px solid #333;
     padding-bottom: 10px;
     margin-top: 30px;
 }
@@ -45,30 +45,30 @@ p {
 
 .tabs {
     display: flex;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #444;
     margin-bottom: 20px;
 }
 
 .tab-button {
     padding: 10px 20px;
     cursor: pointer;
-    background: #f1f1f1;
-    border: 1px solid #ddd;
+    background: #2d2d2d;
+    border: 1px solid #444;
     border-bottom: none;
     font-size: 16px;
     position: relative;
     transition: all 0.3s;
-    color: #555;
+    color: #b0b0b0;
     border-radius: 5px 5px 0 0;
     margin-right: 5px;
 }
 
 .tab-button.active {
-    background: #fff;
-    color: #3498db;
+    background: #333;
+    color: #bb86fc;
     font-weight: bold;
-    border-color: #3498db;
-    border-bottom: 1px solid #fff;
+    border-color: #bb86fc;
+    border-bottom: 1px solid #333;
     margin-bottom: -1px;
     z-index: 1;
 }
@@ -80,12 +80,12 @@ p {
     left: 0;
     width: 100%;
     height: 3px;
-    background-color: #3498db;
+    background-color: #bb86fc;
 }
 
 .tab-button:hover:not(.active) {
-    background: #e0e0e0;
-    color: #2980b9;
+    background: #333;
+    color: #03dac6;
 }
 
 .tab-content {
@@ -105,19 +105,22 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #ccc;
 }
 
 input[type="number"] {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #444;
     border-radius: 4px;
     font-size: 16px;
+    background-color: #2d2d2d;
+    color: #e0e0e0;
 }
 
 button {
-    background-color: #3498db;
-    color: #fff;
+    background-color: #bb86fc;
+    color: #121212;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
@@ -125,14 +128,16 @@ button {
     font-size: 16px;
     margin-right: 10px;
     transition: background-color 0.3s;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #a370f7;
 }
 
 button:disabled {
-    background-color: #bdc3c7;
+    background-color: #444;
+    color: #888;
     cursor: not-allowed;
 }
 
@@ -142,12 +147,12 @@ button:disabled {
 
 .memory-container {
     height: 300px;
-    border: 2px solid #34495e;
+    border: 2px solid #444;
     border-radius: 6px;
     position: relative;
     overflow: hidden;
     margin: 20px 0;
-    background-color: #ecf0f1;
+    background-color: #2d2d2d;
 }
 
 .memory-block {
@@ -158,31 +163,31 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #121212;
     font-weight: bold;
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .process-block {
-    background-color: #3498db;
+    background-color: #cf6679;
 }
 
 .free-block {
-    background-color: #2ecc71;
+    background-color: #03dac6;
 }
 
 .external-frag {
-    background-color: #e74c3c;
+    background-color: #ff7597;
 }
 
 .internal-frag {
-    background-color: #f39c12;
+    background-color: #ffbd59;
 }
 
 .info-panel {
-    background-color: #f8f9fa;
+    background-color: #2d2d2d;
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #444;
     border-radius: 6px;
     margin-top: 20px;
 }
@@ -214,7 +219,7 @@ table {
 }
 
 table, th, td {
-    border: 1px solid #ddd;
+    border: 1px solid #444;
 }
 
 th, td {
@@ -223,7 +228,8 @@ th, td {
 }
 
 th {
-    background-color: #f2f2f2;
+    background-color: #333;
+    color: #bb86fc;
 }
 
 .process-list {
@@ -233,28 +239,28 @@ th {
 }
 
 .process-item {
-    background-color: #f8f9fa;
+    background-color: #2d2d2d;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 4px;
-    border-left: 4px solid #3498db;
+    border-left: 4px solid #cf6679;
 }
 
 .error {
-    color: #e74c3c;
+    color: #ff7597;
     font-size: 14px;
     margin-top: 5px;
 }
 
 .success {
-    color: #2ecc71;
+    color: #03dac6;
     font-size: 14px;
     margin-top: 5px;
 }
 
 .explanation {
-    background-color: #f0f7fb;
-    border-left: 5px solid #3498db;
+    background-color: #2d2d2d;
+    border-left: 5px solid #bb86fc;
     padding: 15px;
     margin: 20px 0;
 }
@@ -263,33 +269,32 @@ th {
     margin: 25px 0;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .pros-section {
-    background-color: #e8f5e9;
+    background-color: rgba(3, 218, 198, 0.1);
     padding: 15px;
-    border-left: 5px solid #4caf50;
+    border-left: 5px solid #03dac6;
 }
 
 .cons-section {
-    background-color: #ffebee;
+    background-color: rgba(207, 102, 121, 0.1);
     padding: 15px;
-    border-left: 5px solid #f44336;
+    border-left: 5px solid #cf6679;
 }
 
 .pros-cons h3 {
     margin-top: 0;
     margin-bottom: 10px;
-    color: #2c3e50;
 }
 
 .pros-section h3 {
-    color: #2e7d32;
+    color: #03dac6;
 }
 
 .cons-section h3 {
-    color: #c62828;
+    color: #cf6679;
 }
 
 .pros-cons ul {
@@ -307,28 +312,28 @@ th {
 }
 
 .comparison-table th, .comparison-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #444;
     padding: 12px;
     text-align: left;
 }
 
 .comparison-table th {
-    background-color: #3498db;
-    color: white;
+    background-color: #333;
+    color: #bb86fc;
 }
 
 .comparison-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #2d2d2d;
 }
 
 .comparison-table tr:hover {
-    background-color: #e6f7ff;
+    background-color: #383838;
 }
 
 .approach-divider {
     margin: 1.5rem 0;
     border: 0;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #444;
 }
 
 @media (max-width: 768px) {
