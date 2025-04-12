@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Paging Simulation</title>
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1>Memory Paging Simulation</h1>
+        <div class="simulation">
+          <div class="logical-memory-section">
+            <div class="logical-memory" data-tippy-content="Logical memory pages">
+              <div class="memory-title">Logical Memory</div>
+              <div class="page-entries">
+                <div class="page-entry">
+                  <span class="addr">0000</span>
+                  <span class="content">a</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0001</span>
+                  <span class="content">b</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0010</span>
+                  <span class="content">c</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0011</span>
+                  <span class="content">d</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0100</span>
+                  <span class="content">e</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0101</span>
+                  <span class="content">f</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0110</span>
+                  <span class="content">g</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">0111</span>
+                  <span class="content">h</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1000</span>
+                  <span class="content">i</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1001</span>
+                  <span class="content">j</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1010</span>
+                  <span class="content">k</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1011</span>
+                  <span class="content">l</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1100</span>
+                  <span class="content">m</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1101</span>
+                  <span class="content">n</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1110</span>
+                  <span class="content">o</span>
+                </div>
+                <div class="page-entry">
+                  <span class="addr">1111</span>
+                  <span class="content">p</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="middle-section">
+            <div class="cpu-section">
+              <div class="cpu" data-tippy-content="CPU generates logical addresses">CPU</div>
+              <div class="logical-address" data-tippy-content="Logical address split into page number (p) and displacement (d)">
+                <div class="address-box">
+                  <span class="page-num">p</span>
+                  <span class="displacement">d</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tlb-section">
+              <div class="tlb" data-tippy-content="Translation Lookaside Buffer (TLB) caches recent page translations">
+                <div class="tlb-title">TLB</div>
+                <div class="tlb-entries">
+                  <div class="tlb-entry">
+                    <span>Page</span>
+                    <span>Frame</span>
+                  </div>
+                </div>
+              </div>
+              <div class="arrows">
+                <div class="tlb-hit-arrow">TLB hit</div>
+                <div class="tlb-miss-arrow">TLB miss</div>
+              </div>
+            </div>
+
+            <div class="page-table-section">
+              <div class="page-table" data-tippy-content="Page table maps logical pages to physical frames">
+                <div class="table-title">Page Table</div>
+                <div class="table-entries"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="physical-memory-section">
+            <div class="physical-memory" data-tippy-content="Physical memory divided into frames">
+              <div class="memory-title">Physical Memory</div>
+              <div class="frame-entries">
+                <div class="frame-entry" data-addr="0000">
+                  <span class="addr">0000</span>
+                  <div class="frame-content"></div>
+                </div>
+                <div class="frame-entry" data-addr="0100">
+                  <span class="addr">0100</span>
+                  <div class="frame-content">i j k l</div>
+                </div>
+                <div class="frame-entry" data-addr="1000">
+                  <span class="addr">1000</span>
+                  <div class="frame-content">m n o p</div>
+                </div>
+                <div class="frame-entry" data-addr="1100">
+                  <span class="addr">1100</span>
+                  <div class="frame-content"></div>
+                </div>
+                <div class="frame-entry" data-addr="10000">
+                  <span class="addr">10000</span>
+                  <div class="frame-content">a b c d</div>
+                </div>
+                <div class="frame-entry" data-addr="11000">
+                  <span class="addr">11000</span>
+                  <div class="frame-content">e f g h</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="controls">
+          <button id="nextBtn">Next Step</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+        
+        <div class="status" id="status">
+          Click "Next Step" to begin the simulation
+        </div>
+
+        <div class="paging-info-container">
+          <h2>📘 About Memory Paging Simulation</h2>
+          <p><strong>Memory Paging</strong> is a technique used in modern operating systems to efficiently manage memory. This simulation shows how logical memory is mapped to physical memory using a page table and TLB (Translation Lookaside Buffer).</p>
+        
+          <h3>🔍 Key Components</h3>
+          <ul>
+            <li><strong>Logical Memory:</strong> The memory as seen by the CPU, divided into equal-sized pages.</li>
+            <li><strong>CPU:</strong> Generates logical addresses to access data.</li>
+            <li><strong>TLB:</strong> A fast-access cache that stores recent page-to-frame translations.</li>
+            <li><strong>Page Table:</strong> Maps each logical page to a physical frame in memory.</li>
+            <li><strong>Physical Memory:</strong> Actual memory (RAM) where pages are loaded into frames.</li>
+          </ul>
+        
+          <h3>🧠 How It Works</h3>
+          <ol>
+            <li>The CPU issues a logical address.</li>
+            <li>The system checks the TLB for a translation.</li>
+            <li>If not found, it consults the page table.</li>
+            <li>The physical address is calculated using frame number + offset.</li>
+            <li>TLB is updated for future quick access.</li>
+          </ol>
+        
+          <h3>📌 Important Terminologies</h3>
+          <ul>
+            <li><strong>Page:</strong> A block of logical memory.</li>
+            <li><strong>Frame:</strong> A block of physical memory.</li>
+            <li><strong>Page Number:</strong> Extracted from the higher bits of a logical address.</li>
+            <li><strong>Offset:</strong> Extracted from the lower bits, points to the specific location inside a page.</li>
+          </ul>
+        
+          <p class="note"><em>Click "Next Step" to watch how the CPU interacts with memory components in a step-by-step paging simulation.</em></p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="script2.js"></script>
+  </body>
+</html>
