@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Communication Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-network-wired"></i> Process Communication in Operating Systems</h1>
+        <p>Interactive Guide to Inter-Process and Intra-Process Communication</p>
+    </header>
+
+    <main>
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="overview">Overview</button>
+            <button class="tab-btn" data-tab="ipc">Inter-Process</button>
+            <button class="tab-btn" data-tab="intra">Intra-Process</button>
+            <button class="tab-btn" data-tab="simulations">Simulations</button>
+        </nav>
+
+        <div class="tab-content">
+            <!-- Overview Tab -->
+            <section id="overview" class="tab-panel active">
+                <h2>Understanding Process Communication</h2>
+                <div class="info-card">
+                    <h3>What is Process Communication?</h3>
+                    <p>Process communication enables coordination and data sharing between processes in an operating system. It's fundamental for:</p>
+                    <ul>
+                        <li>Resource sharing and management</li>
+                        <li>Task synchronization</li>
+                        <li>Data sharing and transfer</li>
+                        <li>Process coordination</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-table">
+                    <h3>IPC vs Intra-Process Communication</h3>
+                    <table>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Inter-Process (IPC)</th>
+                            <th>Intra-Process</th>
+                        </tr>
+                        <tr>
+                            <td>Scope</td>
+                            <td>Between different processes</td>
+                            <td>Between threads in same process</td>
+                        </tr>
+                        <tr>
+                            <td>Memory Space</td>
+                            <td>Separate memory spaces</td>
+                            <td>Shared memory space</td>
+                        </tr>
+                        <tr>
+                            <td>Overhead</td>
+                            <td>Higher (due to memory copying or system calls)</td>
+                            <td>Lower</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Inter-Process Tab -->
+            <section id="ipc" class="tab-panel">
+                <h2>Inter-Process Communication (IPC)</h2>
+                
+                <div class="example-card">
+                    <h3>1. Shared Memory Example</h3>
+                    <pre><code>
+// Producer Process
+sharedMemory.write("Important data");
+
+// Consumer Process
+data = sharedMemory.read();
+                    </code></pre>
+                    <p>Real-world example: Database server sharing cache with query processes</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>2. Message Passing Example</h3>
+                    <pre><code>
+// Client Process
+sendMessage(SERVER_ID, "Request data");
+
+// Server Process
+message = receiveMessage(CLIENT_ID);
+                    </code></pre>
+                    <p>Real-world example: Chat applications, client-server communication</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>3. Pipe Communication</h3>
+                    <pre><code>
+// Process 1
+pipe.write("ls -l | grep .txt");
+
+// Process 2
+pipe.read(); // Receives command output
+                    </code></pre>
+                    <p>Real-world example: Shell command pipelines</p>
+                </div>
+            </section>
+
+            <!-- Intra-Process Tab -->
+            <section id="intra" class="tab-panel">
+                <h2>Intra-Process Communication</h2>
+                
+                <div class="example-card">
+                    <h3>1. Shared Variables</h3>
+                    <pre><code>
+// Thread 1
+sharedCounter++;
+
+// Thread 2
+while(sharedCounter < 100) {
+    processItem();
+}
+                    </code></pre>
+                    <p>Real-world example: Progress tracking in multi-threaded downloads</p>
+                </div>
+
+                <div class="example-card">
+                    <h3>2. Thread Synchronization</h3>
+                    <pre><code>
+// Thread 1
+mutex.lock();
+updateSharedResource();
+mutex.unlock();
+
+// Thread 2
+mutex.lock();
+readSharedResource();
+mutex.unlock();
+                    </code></pre>
+                    <p>Real-world example: Multi-threaded web servers handling shared session data</p>
+                </div>
+            </section>
+
+            <!-- Simulations Tab -->
+            <section id="simulations" class="tab-panel">
+                <h2>Interactive Simulations</h2>
+
+                <div class="simulation-card">
+                    <h3>Message Passing Simulation</h3>
+                    <div class="ipc-box">
+                        <div class="process" id="process1">Process 1</div>
+                        <div class="message" id="message">Hello!</div>
+                        <div class="process" id="process2">Process 2</div>
+                    </div>
+                    <button id="send-message-btn">Send Message</button>
+                </div>
+
+                <div class="simulation-card">
+                    <h3>Shared Memory Simulation</h3>
+                    <div class="shared-memory-box">
+                        <div class="process" id="producer">Producer</div>
+                        <div class="memory" id="shared-memory">Shared Memory</div>
+                        <div class="process" id="consumer">Consumer</div>
+                    </div>
+                    <div class="controls">
+                        <button id="produce-btn">Produce Data</button>
+                        <button id="consume-btn">Consume Data</button>
+                    </div>
+                </div>
+
+                <div class="simulation-card">
+                    <h3>Thread Synchronization</h3>
+                    <div class="thread-sync-box">
+                        <div class="thread" id="thread1">Thread 1</div>
+                        <div class="resource" id="shared-resource">Shared Resource</div>
+                        <div class="thread" id="thread2">Thread 2</div>
+                    </div>
+                    <button id="sync-btn">Start Threads</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
