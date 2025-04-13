@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>File System Organization Simulator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-folder-tree"></i> File System Organization Simulator</h1>
+        </header>
+
+        <section class="organization-info">
+            <h2>Understanding File Organization Techniques</h2>
+            <p>
+                File organization defines how data is stored, accessed, and managed within an operating system. Different operating systems over time have adopted different techniques depending on user needs, hardware limitations, and system complexity. Here's a breakdown of the three main types of file organization used in operating systems:
+            </p>
+        
+            <div class="org-type">
+                <h3><i class="fas fa-folder"></i> Single-Level Directory</h3>
+                <p>
+                    In this simplest form, all files reside in a single directory. There are no folders or subdirectories—every file is stored in one place. This was common in early systems like MS-DOS.
+                </p>
+                <ul>
+                    <li><strong>Pros:</strong> Very easy to implement and use.</li>
+                    <li><strong>Cons:</strong> No separation between users; filename conflicts are common.</li>
+                    <li><strong>Used in:</strong> Early PCs and embedded systems.</li>
+                    <li><strong>Status Today:</strong> Obsolete for general use, though occasionally seen in microcontroller storage systems.</li>
+                </ul>
+            </div>
+        
+            <div class="org-type">
+                <h3><i class="fas fa-folders"></i> Two-Level Directory</h3>
+                <p>
+                    This structure introduces user directories under a common root. Each user gets a personal space to store files, but cannot organize them into subfolders.
+                </p>
+                <ul>
+                    <li><strong>Pros:</strong> Better user file separation and name uniqueness.</li>
+                    <li><strong>Cons:</strong> No further directory nesting; rigid structure.</li>
+                    <li><strong>Used in:</strong> Educational and early UNIX systems.</li>
+                    <li><strong>Status Today:</strong> Mostly evolved into hierarchical systems.</li>
+                </ul>
+            </div>
+        
+            <div class="org-type">
+                <h3><i class="fas fa-sitemap"></i> Hierarchical Directory</h3>
+                <p>
+                    This is the standard in modern systems. Directories can contain subdirectories, allowing for complex tree-like organization of files and folders. Users can group data logically into nested folders.
+                </p>
+                <ul>
+                    <li><strong>Pros:</strong> Highly scalable, organized, supports deep categorization.</li>
+                    <li><strong>Cons:</strong> More complex navigation and management.</li>
+                    <li><strong>Used in:</strong> Windows, Linux, macOS, Android, iOS, and more.</li>
+                    <li><strong>Status Today:</strong> Universally adopted in all mainstream operating systems.</li>
+                </ul>
+            </div>
+        
+            <div class="facts-section">
+                <h3>📌 Quick Facts & Trivia</h3>
+                <ul>
+                    <li>Windows uses drive letters (C:, D:) at the root; Linux uses a single-root `/` system.</li>
+                    <li>UNIX popularized hierarchical file systems in the 1970s.</li>
+                    <li>Modern file systems like NTFS, ext4, APFS, and HFS+ are all hierarchical.</li>
+                    <li>The concept of "home directories" originated with the two-level model.</li>
+                </ul>
+            </div>
+        </section>
+        
+        <button id="back-btn" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+
+        <div class="mode-selector">
+            <h2>Select File Organization Mode</h2>
+            <div class="mode-cards">
+                <div class="mode-card" data-mode="single">
+                    <i class="fas fa-folder"></i>
+                    <h3>Single-Level</h3>
+                    <p>All files in one directory</p>
+                </div>
+                <div class="mode-card" data-mode="two">
+                    <i class="fas fa-sitemap"></i>
+                    <h3>Two-Level</h3>
+                    <p>User-specific directories</p>
+                </div>
+                
+                <div class="mode-card" data-mode="hierarchical">
+                    <img src="../images/two-level-diagram.png" alt="Two-Level Directory Structure" style="width: 20%; margin: 10px auto; display: block;" />
+                    <h3>Hierarchical</h3>
+                    <p>Multi-level directories</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulator-container" style="display: none;">
+            <div class="actions-panel">
+                <h3>File System Actions</h3>
+                <div class="action-buttons">
+                    <button class="action-btn" data-action="addFile">
+                        <i class="fas fa-file-plus"></i> Add File
+                    </button>
+                    <button class="action-btn" data-action="createFolder">
+                        <i class="fas fa-folder-plus"></i> Create Folder
+                    </button>
+                    <button class="action-btn" data-action="deleteFile">
+                        <i class="fas fa-file-minus"></i> Delete File
+                    </button>
+                    <button class="action-btn" data-action="deleteFolder">
+                        <i class="fas fa-folder-minus"></i> Delete Folder
+                    </button>
+                    <button class="action-btn" data-action="searchFile">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <button class="action-btn" data-action="listFiles">
+                        <i class="fas fa-list"></i> List All
+                    </button>
+                </div>
+
+                <div class="action-form" style="display: none;">
+                    <input type="text" id="input1" placeholder="File/Folder name" />
+                    <input type="text" id="input2" placeholder="Path (e.g. root/folder1)" />
+                    <button id="execute-action">Execute</button>
+                    <button id="cancel-action">Cancel</button>
+                </div>
+            </div>
+
+            <div class="visualization-panel">
+                <h3>File System Visualization</h3>
+                <div class="current-mode">
+                    <span id="current-mode-label">No mode selected</span>
+                </div>
+                <div id="visualization-area">
+                    <div id="tree-view"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
