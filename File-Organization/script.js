@@ -338,44 +338,31 @@ class FileSystem {
         }, 3000);
     }
 }
-document.getElementById("back-btn").addEventListener("click", () => {
-    window.history.back(); // Goes to the previous page in browser history
-});
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const modeCards = document.querySelectorAll(".mode-card");
     const simulatorContainer = document.querySelector(".simulator-container");
     const modeSelector = document.querySelector(".mode-selector");
-    const backBtn = document.getElementById("back-btn");
     const currentModeLabel = document.getElementById("current-mode-label");
+    const backBtn = document.getElementById("back-btn");
 
-    let selectedMode = null;
-
+    // Handle clicking a file organization mode
     modeCards.forEach(card => {
-        card.addEventListener("click", function () {
-            selectedMode = card.getAttribute("data-mode");
-            simulatorContainer.style.display = "block";
+        card.addEventListener("click", () => {
+            const mode = card.dataset.mode;
+            currentModeLabel.textContent = `Current Mode: ${mode}`;
             modeSelector.style.display = "none";
-
-            // Update current mode label
-            currentModeLabel.textContent = `Current Mode: ${selectedMode.charAt(0).toUpperCase() + selectedMode.slice(1)} Directory`;
+            simulatorContainer.style.display = "flex";
         });
     });
 
-    backBtn.addEventListener("click", function () {
-        if (!selectedMode) {
-            // No mode selected yet, go back to previous page
-            window.history.back();
-        } else {
-            // Reset view to mode selection
-            selectedMode = null;
-            simulatorContainer.style.display = "none";
-            modeSelector.style.display = "block";
-            currentModeLabel.textContent = "No mode selected";
-        }
+    // Back button logic to go back to mode selection
+    backBtn.addEventListener("click", () => {
+        simulatorContainer.style.display = "none";
+        modeSelector.style.display = "block";
+        currentModeLabel.textContent = "No mode selected";
     });
 });
-
 
 
 
