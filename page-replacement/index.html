@@ -443,21 +443,6 @@ h2, h3 {
     left: 2px;
 }
 
-/* Reference Bit Indicator */
-.ref-bit {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #58a6ff;
-}
-
-.ref-bit.off {
-    background-color: #636e7b;
-}
-
 /* Enhanced Second Chance Info */
 .e2c-info {
     position: absolute;
@@ -562,14 +547,6 @@ h2, h3 {
             <div class="legend-color" style="background-color: #e74c3c;"></div>
             <span class="legend-label">Page Fault</span>
         </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background-color: #58a6ff;"></div>
-            <span class="legend-label">Reference Bit Set</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background-color: #636e7b;"></div>
-            <span class="legend-label">Reference Bit Cleared</span>
-        </div>
     </div>
     
     <!-- Tabs -->
@@ -648,653 +625,797 @@ h2, h3 {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // DOM Elements
-            const algorithmSelect = document.getElementById('algorithm');
-            const framesInput = document.getElementById('frames');
-            const referenceStringInput = document.getElementById('reference-string');
-            const startButton = document.getElementById('start');
-            const resetButton = document.getElementById('reset');
-            const prevStepButton = document.getElementById('prev-step');
-            const nextStepButton = document.getElementById('next-step');
-            const autoPlayButton = document.getElementById('auto-play');
-            const referenceDisplay = document.getElementById('reference-display');
-            const framesDisplay = document.getElementById('frames-display');
-            const resultsDiv = document.getElementById('results');
-            const stepMessageDiv = document.getElementById('step-message');
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            // Variables
-            let referenceString = [];
-            let frames = [];
-            let counters = {}; // For LFU and MFU
-            let referenceBits = {}; // For additional reference bit, second chance and enhanced second chance
-            let modifyBits = {}; // For enhanced second chance
-            let historyBits = {}; // For additional reference bit
-            let clockPointer = 0; // For second chance and enhanced second chance
-            let currentStep = -1;
-            let pageFaults = 0;
-            let pageHits = 0;
-            let history = [];
-            let autoPlayInterval;
-            let isAutoPlaying = false;
-            
-            // Track page load order for FIFO algorithm
-            let pageLoadOrder = [];
-            
-            // Initialize
-            function init() {
-                algorithmSelect.disabled = false;
-                framesInput.disabled = false;
-                referenceStringInput.disabled = false;
-                startButton.disabled = false;
-                resetButton.disabled = true;
-                prevStepButton.disabled = true;
-                nextStepButton.disabled = true;
-                autoPlayButton.disabled = true;
-                
-                referenceDisplay.innerHTML = '';
-                framesDisplay.innerHTML = '';
-                resultsDiv.innerHTML = '<p>Press "Start Visualization" to begin...</p>';
-                stepMessageDiv.innerHTML = 'Press "Start Visualization" to begin...';
-                
-                referenceString = [];
-                frames = [];
-                counters = {};
-                referenceBits = {};
-                modifyBits = {};
-                historyBits = {};
-                clockPointer = 0;
-                pageLoadOrder = [];
-                currentStep = -1;
-                pageFaults = 0;
-                pageHits = 0;
-                history = [];
-                
+           // DOM Elements
+const algorithmSelect = document.getElementById('algorithm');
+const framesInput = document.getElementById('frames');
+const referenceStringInput = document.getElementById('reference-string');
+const startButton = document.getElementById('start');
+const resetButton = document.getElementById('reset');
+const prevStepButton = document.getElementById('prev-step');
+const nextStepButton = document.getElementById('next-step');
+const autoPlayButton = document.getElementById('auto-play');
+const referenceDisplay = document.getElementById('reference-display');
+const framesDisplay = document.getElementById('frames-display');
+const resultsDiv = document.getElementById('results');
+const stepMessageDiv = document.getElementById('step-message');
+const tabs = document.querySelectorAll('.tab');
+const tabContents = document.querySelectorAll('.tab-content');
+
+// Variables
+let referenceString = [];
+let frames = [];
+let counters = {}; // For LFU and MFU
+let referenceBits = {}; // For additional reference bit, second chance and enhanced second chance
+let modifyBits = {}; // For enhanced second chance
+let historyBits = {}; // For additional reference bit
+let clockPointer = 0; // For second chance and enhanced second chance
+let currentStep = -1;
+let pageFaults = 0;
+let pageHits = 0;
+let history = [];
+let autoPlayInterval;
+let isAutoPlaying = false;
+
+// Track page load order for FIFO algorithm
+let pageLoadOrder = [];
+
+// Initialize
+function init() {
+    algorithmSelect.disabled = false;
+    framesInput.disabled = false;
+    referenceStringInput.disabled = false;
+    startButton.disabled = false;
+    resetButton.disabled = true;
+    prevStepButton.disabled = true;
+    nextStepButton.disabled = true;
+    autoPlayButton.disabled = true;
+    
+    referenceDisplay.innerHTML = '';
+    framesDisplay.innerHTML = '';
+    resultsDiv.innerHTML = '<p>Press "Start Visualization" to begin...</p>';
+    stepMessageDiv.innerHTML = 'Press "Start Visualization" to begin...';
+    
+    referenceString = [];
+    frames = [];
+    counters = {};
+    referenceBits = {};
+    modifyBits = {};
+    historyBits = {};
+    clockPointer = 0;
+    pageLoadOrder = [];
+    currentStep = -1;
+    pageFaults = 0;
+    pageHits = 0;
+    history = [];
+    
+    clearInterval(autoPlayInterval);
+    isAutoPlaying = false;
+    autoPlayButton.textContent = '⏵ Auto Play';
+}
+
+// Start visualization
+startButton.addEventListener('click', function() {
+    // Parse reference string
+    referenceString = referenceStringInput.value
+        .trim()
+        .split(/\s+/)
+        .map(n => parseInt(n));
+    
+    // Validate reference string
+    if (referenceString.some(isNaN)) {
+        alert('Invalid reference string. Please enter space-separated numbers.');
+        return;
+    }
+    
+    // Get number of frames
+    const numFrames = parseInt(framesInput.value);
+    if (isNaN(numFrames) || numFrames < 1 || numFrames > 10) {
+        alert('Number of frames must be between 1 and 10.');
+        return;
+    }
+    
+    // Initialize frames
+    frames = Array(numFrames).fill(null);
+    
+    // Initialize counters, reference bits, and modify bits for each possible page in reference string
+    const uniquePages = new Set(referenceString);
+    uniquePages.forEach(page => {
+        counters[page] = 0;
+        referenceBits[page] = 0;
+        modifyBits[page] = 0;
+        // Initialize history bits for additional reference bit algorithm
+        historyBits[page] = 0; // 8-bit history (0-255)
+    });
+    
+    // Reset page load order and clock pointer
+    pageLoadOrder = [];
+    clockPointer = 0;
+    
+    // Update UI
+    algorithmSelect.disabled = true;
+    framesInput.disabled = true;
+    referenceStringInput.disabled = true;
+    startButton.disabled = true;
+    resetButton.disabled = false;
+    nextStepButton.disabled = false;
+    autoPlayButton.disabled = false;
+    
+    // Initialize visualization
+    renderReferenceString();
+    renderFrames();
+    currentStep = -1;
+    pageFaults = 0;
+    pageHits = 0;
+    history = [{ 
+        frames: [...frames], 
+        counters: {...counters},
+        referenceBits: {...referenceBits},
+        modifyBits: {...modifyBits},
+        historyBits: {...historyBits},
+        clockPointer: clockPointer,
+        pageFault: false, 
+        victim: null, 
+        accessed: null,
+        pageLoadOrder: [...pageLoadOrder],
+        stepDescription: "Initial state: All frames are empty."
+    }];
+    
+    stepMessageDiv.innerHTML = "Initial state: All frames are empty. Press 'Next Step' to begin.";
+    updateResults();
+});
+
+// Reset visualization
+resetButton.addEventListener('click', init);
+
+// Next step
+nextStepButton.addEventListener('click', nextStep);
+
+// Previous step
+prevStepButton.addEventListener('click', prevStep);
+
+// Auto play
+autoPlayButton.addEventListener('click', function() {
+    if (isAutoPlaying) {
+        clearInterval(autoPlayInterval);
+        isAutoPlaying = false;
+        autoPlayButton.innerHTML = '<span class="icon">⏵</span> Auto Play';
+    } else {
+        isAutoPlaying = true;
+        autoPlayButton.innerHTML = '<span class="icon">⏸</span> Stop';
+        autoPlayInterval = setInterval(() => {
+            if (currentStep >= referenceString.length - 1) {
                 clearInterval(autoPlayInterval);
                 isAutoPlaying = false;
-                autoPlayButton.textContent = '⏵ Auto Play';
+                autoPlayButton.innerHTML = '<span class="icon">⏵</span> Auto Play';
+                return;
             }
-            
-            // Start visualization
-            startButton.addEventListener('click', function() {
-                // Parse reference string
-                referenceString = referenceStringInput.value
-                    .trim()
-                    .split(/\s+/)
-                    .map(n => parseInt(n));
-                
-                // Validate reference string
-                if (referenceString.some(isNaN)) {
-                    alert('Invalid reference string. Please enter space-separated numbers.');
-                    return;
-                }
-                
-                // Get number of frames
-                const numFrames = parseInt(framesInput.value);
-                if (isNaN(numFrames) || numFrames < 1 || numFrames > 10) {
-                    alert('Number of frames must be between 1 and 10.');
-                    return;
-                }
-                
-                // Initialize frames
-                frames = Array(numFrames).fill(null);
-                
-                // Initialize counters, reference bits, and modify bits for each possible page in reference string
-                const uniquePages = new Set(referenceString);
-                uniquePages.forEach(page => {
-                    counters[page] = 0;
-                    referenceBits[page] = 0;
-                    modifyBits[page] = 0;
-                    // Initialize history bits for additional reference bit algorithm
-                    historyBits[page] = 0; // 8-bit history (0-255)
-                });
-                
-                // Reset page load order and clock pointer
-                pageLoadOrder = [];
-                clockPointer = 0;
-                
-                // Update UI
-                algorithmSelect.disabled = true;
-                framesInput.disabled = true;
-                referenceStringInput.disabled = true;
-                startButton.disabled = true;
-                resetButton.disabled = false;
-                nextStepButton.disabled = false;
-                autoPlayButton.disabled = false;
-                
-                // Initialize visualization
-                renderReferenceString();
-                renderFrames();
-                currentStep = -1;
-                pageFaults = 0;
-                pageHits = 0;
-                history = [{ 
-                    frames: [...frames], 
-                    counters: {...counters},
-                    referenceBits: {...referenceBits},
-                    modifyBits: {...modifyBits},
-                    historyBits: {...historyBits},
-                    clockPointer: clockPointer,
-                    pageFault: false, 
-                    victim: null, 
-                    accessed: null,
-                    pageLoadOrder: [...pageLoadOrder],
-                    stepDescription: "Initial state: All frames are empty."
-                }];
-                
-                stepMessageDiv.innerHTML = "Initial state: All frames are empty. Press 'Next Step' to begin.";
-                updateResults();
-            });
-            
-            // Reset visualization
-            resetButton.addEventListener('click', init);
-            
-            // Next step
-            nextStepButton.addEventListener('click', nextStep);
-            
-            // Previous step
-            prevStepButton.addEventListener('click', prevStep);
-            
-            // Auto play
-            autoPlayButton.addEventListener('click', function() {
-                if (isAutoPlaying) {
-                    clearInterval(autoPlayInterval);
-                    isAutoPlaying = false;
-                    autoPlayButton.innerHTML = '<span class="icon">⏵</span> Auto Play';
-                } else {
-                    isAutoPlaying = true;
-                    autoPlayButton.innerHTML = '<span class="icon">⏸</span> Stop';
-                    autoPlayInterval = setInterval(() => {
-                        if (currentStep >= referenceString.length - 1) {
-                            clearInterval(autoPlayInterval);
-                            isAutoPlaying = false;
-                            autoPlayButton.innerHTML = '<span class="icon">⏵</span> Auto Play';
-                            return;
-                        }
-                        nextStep();
-                    }, 800);
-                }
-            });
-            
-            // Tab switching
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    // Add active class to clicked tab
-                    this.classList.add('active');
-                    
-                    // Hide all tab contents
-                    tabContents.forEach(content => content.style.display = 'none');
-                    // Show selected tab content
-                    document.getElementById(`${this.dataset.tab}-tab`).style.display = 'block';
-                });
-            });
-            
-            // Render reference string
-            function renderReferenceString() {
-                referenceDisplay.innerHTML = '';
-                
-                referenceString.forEach((page, index) => {
-                    const cell = document.createElement('div');
-                    cell.className = 'reference-cell';
-                    cell.id = `ref-${index}`;
-                    cell.textContent = page;
-                    referenceDisplay.appendChild(cell);
-                });
-            }
+            nextStep();
+        }, 800);
+    }
+});
 
-            // Render memory frames with status indicators
-            function renderFrames() {
-                framesDisplay.innerHTML = '';
-                
-                // Create initial column for frame numbers
-                const frameNumberColumn = document.createElement('div');
-                frameNumberColumn.className = 'frame-column';
-                
-                for (let i = 0; i < frames.length; i++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'frame-cell';
-                    cell.textContent = `F${i}`;
-                    cell.style.fontWeight = 'bold';
-                    cell.style.backgroundColor = '#2d333b';
-                    frameNumberColumn.appendChild(cell);
+// Tab switching
+tabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+        
+        // Hide all tab contents
+        tabContents.forEach(content => content.style.display = 'none');
+        // Show selected tab content
+        document.getElementById(`${this.dataset.tab}-tab`).style.display = 'block';
+    });
+});
+
+// Render reference string
+function renderReferenceString() {
+    referenceDisplay.innerHTML = '';
+    
+    referenceString.forEach((page, index) => {
+        const cell = document.createElement('div');
+        cell.className = 'reference-cell';
+        cell.id = `ref-${index}`;
+        cell.textContent = page;
+        referenceDisplay.appendChild(cell);
+    });
+}
+
+// Render memory frames with status indicators
+function renderFrames() {
+    framesDisplay.innerHTML = '';
+    
+    // Create initial column for frame numbers
+    const frameNumberColumn = document.createElement('div');
+    frameNumberColumn.className = 'frame-column';
+    
+    for (let i = 0; i < frames.length; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'frame-cell';
+        cell.textContent = `F${i}`;
+        cell.style.fontWeight = 'bold';
+        cell.style.backgroundColor = '#2d333b';
+        frameNumberColumn.appendChild(cell);
+    }
+    
+    framesDisplay.appendChild(frameNumberColumn);
+    
+    // Create a column for each step in history
+    for (let i = 0; i <= currentStep + 1; i++) {
+        if (i >= history.length) continue;
+        
+        const state = history[i];
+        const column = document.createElement('div');
+        column.className = 'frame-column';
+        column.id = `step-${i}`;
+        
+        // For the current step, add a header indicator
+        if (i === currentStep + 1 && i > 0) {
+            const stepHeader = document.createElement('div');
+            if (state.pageFault) {
+                stepHeader.className = 'status-indicator fault';
+                stepHeader.textContent = 'PAGE FAULT';
+            } else if (state.accessed !== null) {
+                stepHeader.className = 'status-indicator hit';
+                stepHeader.textContent = 'PAGE HIT';
+            }
+            column.appendChild(stepHeader);
+        }
+        
+        for (let j = 0; j < frames.length; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'frame-cell';
+            
+            // Set content
+            if (state.frames[j] !== null) {
+                // Show page number with reference bit (for Second Chance)
+                if (['second-chance', 'enhanced-second-chance'].includes(algorithmSelect.value)) {
+                    const page = state.frames[j];
+                    // Create superscript for reference bit
+                    cell.textContent = page;
+                    const superscript = document.createElement('sub');
+                    superscript.textContent = state.referenceBits[page];
+                    superscript.style.fontSize = '65%';
+                    superscript.style.marginLeft = '1px';
+                    cell.appendChild(superscript);
+                } else {
+                    cell.textContent = state.frames[j];
                 }
                 
-                framesDisplay.appendChild(frameNumberColumn);
-                
-                // Create a column for each step in history
-                for (let i = 0; i <= currentStep + 1; i++) {
-                    if (i >= history.length) continue;
-                    
-                    const state = history[i];
-                    const column = document.createElement('div');
-                    column.className = 'frame-column';
-                    column.id = `step-${i}`;
-                    
-                    // For the current step, add a header indicator
-                    if (i === currentStep + 1 && i > 0) {
-                        const stepHeader = document.createElement('div');
-                        if (state.pageFault) {
-                            stepHeader.className = 'status-indicator fault';
-                            stepHeader.textContent = 'PAGE FAULT';
-                        } else if (state.accessed !== null) {
-                            stepHeader.className = 'status-indicator hit';
-                            stepHeader.textContent = 'PAGE HIT';
-                        }
-                        column.appendChild(stepHeader);
-                    }
-                    
-                    for (let j = 0; j < frames.length; j++) {
-                        const cell = document.createElement('div');
-                        cell.className = 'frame-cell';
-                        
-                        // Set content
-                        if (state.frames[j] !== null) {
-                            cell.textContent = state.frames[j];
-                            
-                           // Add reference bit indicator for relevant algorithms
-                           if (['additional-reference-bit', 'second-chance', 'enhanced-second-chance'].includes(algorithmSelect.value)) {
-                                const page = state.frames[j];
-                                if (page !== null) {
-                                    // Add reference bit indicator
-                                    const refBit = document.createElement('div');
-                                    refBit.className = `ref-bit ${state.referenceBits[page] ? '' : 'off'}`;
-                                    cell.appendChild(refBit);
-                                    
-                                    // For enhanced second chance, show class (R,M)
-                                    if (algorithmSelect.value === 'enhanced-second-chance') {
-                                        const e2cInfo = document.createElement('div');
-                                        e2cInfo.className = 'e2c-info';
-                                        e2cInfo.textContent = `${state.referenceBits[page]},${state.modifyBits[page]}`;
-                                        cell.appendChild(e2cInfo);
-                                    }
-                                }
-                            }
-                            
-                            // Add badges for fault, hit, and victim
-                            if (i === currentStep + 1 && i > 0) {
-                                // Page fault badge
-                                if (state.pageFault && state.frames[j] === state.accessed) {
-                                    const faultBadge = document.createElement('div');
-                                    faultBadge.className = 'badge fault';
-                                    faultBadge.textContent = 'F';
-                                    cell.appendChild(faultBadge);
-                                    cell.classList.add('page-fault');
-                                }
-                                
-                                // Page hit badge
-                                if (!state.pageFault && state.frames[j] === state.accessed) {
-                                    const hitBadge = document.createElement('div');
-                                    hitBadge.className = 'badge hit';
-                                    hitBadge.textContent = 'H';
-                                    cell.appendChild(hitBadge);
-                                    cell.classList.add('page-hit');
-                                }
-                                
-                                // Victim badge
-                                if (state.victim !== null && state.frames[j] === state.victim) {
-                                    const victimBadge = document.createElement('div');
-                                    victimBadge.className = 'badge victim';
-                                    victimBadge.textContent = 'V';
-                                    cell.appendChild(victimBadge);
-                                    cell.classList.add('victim');
-                                }
-                            }
-                        }
-                        
-                        column.appendChild(cell);
-                    }
-                    
-                    framesDisplay.appendChild(column);
-                }
-            }
-            
-            // Update results display
-            function updateResults() {
-                resultsDiv.innerHTML = `
-                    <p><strong>Page Faults:</strong> ${pageFaults}</p>
-                    <p><strong>Page Hits:</strong> ${pageHits}</p>
-                    <p><strong>Total References:</strong> ${currentStep + 1}</p>
-                    <p><strong>Page Fault Rate:</strong> ${currentStep >= 0 ? ((pageFaults / (currentStep + 1)) * 100).toFixed(2) : 0}%</p>
-                `;
-            }
-            
-            // Function to process next step
-            function nextStep() {
-                if (currentStep >= referenceString.length - 1) return;
-                
-                currentStep++;
-                const page = referenceString[currentStep];
-                
-                // Update reference string display
-                document.querySelectorAll('.reference-cell').forEach(cell => cell.classList.remove('current'));
-                document.getElementById(`ref-${currentStep}`).classList.add('current');
-                
-                // Check if page is already in frames (page hit)
-                const frameIndex = frames.indexOf(page);
-                let pageFault = frameIndex === -1;
-                let victim = null;
-                
-                // Update counters for LFU/MFU
-                counters[page] = (counters[page] || 0) + 1;
-                
-                // Set reference bit for relevant algorithms
-                referenceBits[page] = 1;
-                
-                // For the sake of visualization, randomly set modify bit in enhanced second chance
+                // For enhanced second chance, show class (R,M)
                 if (algorithmSelect.value === 'enhanced-second-chance') {
-                    // 30% chance of modifying the page
-                    modifyBits[page] = Math.random() < 0.3 ? 1 : 0;
-                }
-                
-                // Update history bits for additional reference bit algorithm
-                if (algorithmSelect.value === 'additional-reference-bit') {
-                    // Shift existing history one bit to the right and add reference bit to MSB
-                    historyBits[page] = ((historyBits[page] >> 1) | (referenceBits[page] << 7)) & 0xFF;
-                }
-                
-                // Handle page replacement based on selected algorithm
-                if (pageFault) {
-                    pageFaults++;
-                    
-                    // Find empty frame if available
-                    const emptyFrameIndex = frames.indexOf(null);
-                    
-                    if (emptyFrameIndex !== -1) {
-                        // Place page in empty frame
-                        frames[emptyFrameIndex] = page;
-                        pageLoadOrder.push(page);
-                    } else {
-                        // Need to replace a page
-                        let victimIndex = -1;
-                        
-                        switch (algorithmSelect.value) {
-                            case 'fifo':
-                                // First-In-First-Out: replace the oldest page
-                                const oldestPage = pageLoadOrder[0];
-                                victimIndex = frames.indexOf(oldestPage);
-                                pageLoadOrder.shift();
-                                pageLoadOrder.push(page);
-                                break;
-                                
-                            case 'lru':
-                                // Least Recently Used: find the page used least recently
-                                // For simplicity, we'll use the position in history
-                                let leastRecentIndex = 0;
-                                let leastRecentStep = currentStep;
-                                
-                                for (let i = 0; i < frames.length; i++) {
-                                    const framePage = frames[i];
-                                    // Find the most recent access to this page before current step
-                                    let lastAccess = -1;
-                                    for (let j = currentStep - 1; j >= 0; j--) {
-                                        if (referenceString[j] === framePage) {
-                                            lastAccess = j;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if (lastAccess < leastRecentStep) {
-                                        leastRecentStep = lastAccess;
-                                        leastRecentIndex = i;
-                                    }
-                                }
-                                
-                                victimIndex = leastRecentIndex;
-                                break;
-                                
-                            case 'optimal':
-                                // Optimal: replace page that won't be used for longest time
-                                let farthestUseIndex = 0;
-                                let farthestUseStep = -1;
-                                
-                                for (let i = 0; i < frames.length; i++) {
-                                    const framePage = frames[i];
-                                    // Find next use of this page after current step
-                                    let nextUse = Infinity;
-                                    for (let j = currentStep + 1; j < referenceString.length; j++) {
-                                        if (referenceString[j] === framePage) {
-                                            nextUse = j;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if (nextUse > farthestUseStep) {
-                                        farthestUseStep = nextUse;
-                                        farthestUseIndex = i;
-                                    }
-                                }
-                                
-                                victimIndex = farthestUseIndex;
-                                break;
-                                
-                            case 'lfu':
-                                // Least Frequently Used: replace page with lowest counter
-                                let minCount = Infinity;
-                                let minCountIndex = 0;
-                                
-                                for (let i = 0; i < frames.length; i++) {
-                                    const framePage = frames[i];
-                                    if (counters[framePage] < minCount) {
-                                        minCount = counters[framePage];
-                                        minCountIndex = i;
-                                    }
-                                }
-                                
-                                victimIndex = minCountIndex;
-                                break;
-                                
-                            case 'mfu':
-                                // Most Frequently Used: replace page with highest counter
-                                let maxCount = -1;
-                                let maxCountIndex = 0;
-                                
-                                for (let i = 0; i < frames.length; i++) {
-                                    const framePage = frames[i];
-                                    if (counters[framePage] > maxCount) {
-                                        maxCount = counters[framePage];
-                                        maxCountIndex = i;
-                                    }
-                                }
-                                
-                                victimIndex = maxCountIndex;
-                                break;
-                                
-                            case 'additional-reference-bit':
-                                // Additional Reference Bit: replace page with lowest history value
-                                let minHistory = Infinity;
-                                let minHistoryIndex = 0;
-                                
-                                for (let i = 0; i < frames.length; i++) {
-                                    const framePage = frames[i];
-                                    if (historyBits[framePage] < minHistory) {
-                                        minHistory = historyBits[framePage];
-                                        minHistoryIndex = i;
-                                    }
-                                }
-                                
-                                victimIndex = minHistoryIndex;
-                                break;
-                                
-                            case 'second-chance':
-                                // Second Chance: FIFO with reference bit check
-                                let currentPointer = clockPointer;
-                                let found = false;
-                                
-                                // First pass: look for pages with reference bit = 0
-                                for (let i = 0; i < frames.length; i++) {
-                                    const frameIndex = (currentPointer + i) % frames.length;
-                                    const framePage = frames[frameIndex];
-                                    
-                                    if (referenceBits[framePage] === 0) {
-                                        victimIndex = frameIndex;
-                                        found = true;
-                                        clockPointer = (frameIndex + 1) % frames.length;
-                                        break;
-                                    } else {
-                                        // Give second chance: clear reference bit
-                                        referenceBits[framePage] = 0;
-                                    }
-                                }
-                                
-                                // If no page with reference bit = 0 is found, select the current pointer position
-                                if (!found) {
-                                    victimIndex = currentPointer;
-                                    clockPointer = (currentPointer + 1) % frames.length;
-                                }
-                                break;
-                                
-                            case 'enhanced-second-chance':
-                                // Enhanced Second Chance: Consider both reference and modify bits
-                                // Priority: (0,0) > (0,1) > (1,0) > (1,1)
-                                let classes = [[], [], [], []];
-                                
-                                // Classify pages into classes (R,M)
-                                for (let i = 0; i < frames.length; i++) {
-                                    const framePage = frames[i];
-                                    const classIndex = (referenceBits[framePage] << 1) | modifyBits[framePage];
-                                    classes[classIndex].push(i);
-                                }
-                                
-                                // Find the first non-empty class
-                                for (let i = 0; i < classes.length; i++) {
-                                    if (classes[i].length > 0) {
-                                        // Use FIFO within the class
-                                        victimIndex = classes[i][0];
-                                        break;
-                                    }
-                                }
-                                
-                                // Update clock pointer for visualization
-                                clockPointer = (victimIndex + 1) % frames.length;
-                                break;
-                                
-                            default:
-                                // Default to FIFO
-                                const oldestPageDefault = pageLoadOrder[0];
-                                victimIndex = frames.indexOf(oldestPageDefault);
-                                pageLoadOrder.shift();
-                                pageLoadOrder.push(page);
-                        }
-                        
-                        victim = frames[victimIndex];
-                        frames[victimIndex] = page;
+                    const page = state.frames[j];
+                    if (page !== null) {
+                        const e2cInfo = document.createElement('div');
+                        e2cInfo.className = 'e2c-info';
+                        e2cInfo.textContent = `${state.referenceBits[page]},${state.modifyBits[page]}`;
+                        cell.appendChild(e2cInfo);
                     }
-                } else {
-                    // Page hit: update usage information
-                    pageHits++;
+                }
+                // // Highlight current clock pointer for second chance algorithms
+                // if (['second-chance', 'enhanced-second-chance'].includes(algorithmSelect.value)) {
+                //     if (j === state.clockPointer) {
+                //         cell.style.boxShadow = 'inset 0 0 0 2px #f39c12';
+                //     }
+                // }
+                
+                // Add badges for special states
+                if (i === currentStep + 1) {
+                    // Add victim badge
+                    if (state.victim === state.frames[j]) {
+                        cell.classList.add('victim');
+                        const victimBadge = document.createElement('span');
+                        victimBadge.className = 'badge victim';
+                        victimBadge.textContent = 'out';
+                        cell.appendChild(victimBadge);
+                    }
                     
-                    // For LRU, update order (move to end)
-                    if (algorithmSelect.value === 'lru') {
-                        const index = pageLoadOrder.indexOf(page);
-                        if (index !== -1) {
-                            pageLoadOrder.splice(index, 1);
-                            pageLoadOrder.push(page);
+                    // Add hit/fault badge
+                    if (state.accessed === state.frames[j]) {
+                        if (state.pageFault) {
+                            cell.classList.add('page-fault');
+                            const faultBadge = document.createElement('span');
+                            faultBadge.className = 'badge fault';
+                            faultBadge.textContent = 'new';
+                            cell.appendChild(faultBadge);
+                        } else {
+                            cell.classList.add('page-hit');
+                            const hitBadge = document.createElement('span');
+                            hitBadge.className = 'badge hit';
+                            hitBadge.textContent = 'hit';
+                            cell.appendChild(hitBadge);
                         }
                     }
                 }
-                
-                // Create a description for the current step
-                let stepDescription = "";
-                
-                if (pageFault) {
-                    if (victim === null) {
-                        stepDescription = `Page ${page} not in memory. Page fault occurred. Page ${page} loaded into empty frame.`;
-                    } else {
-                        stepDescription = `Page ${page} not in memory. Page fault occurred. Page ${victim} was selected for replacement by ${algorithmSelect.options[algorithmSelect.selectedIndex].text}.`;
-                    }
-                } else {
-                    stepDescription = `Page ${page} already in memory. Page hit occurred. No replacement needed.`;
-                }
-                
-                // Add step to history
-                history.push({
-                    frames: [...frames],
-                    counters: {...counters},
-                    referenceBits: {...referenceBits},
-                    modifyBits: {...modifyBits},
-                    historyBits: {...historyBits},
-                    clockPointer: clockPointer,
-                    pageFault: pageFault,
-                    victim: victim,
-                    accessed: page,
-                    pageLoadOrder: [...pageLoadOrder],
-                    stepDescription: stepDescription
-                });
-                
-                // Update UI
-                renderFrames();
-                updateResults();
-                stepMessageDiv.innerHTML = stepDescription;
-                
-                // Update navigation buttons
-                prevStepButton.disabled = false;
-                nextStepButton.disabled = currentStep >= referenceString.length - 1;
-                
-                // Scroll reference string to keep current page in view
-                if (currentStep > 5) {
-                    const cellWidth = 42; // Width of reference cell + margins
-                    referenceDisplay.scrollLeft = (currentStep - 5) * cellWidth;
-                }
-                
-                // Scroll frames to keep current step in view
-                const frameColumnWidth = 42; // Width of frame column
-                framesDisplay.scrollLeft = framesDisplay.scrollWidth;
             }
             
-            // Function to go back to previous step
-            function prevStep() {
-                if (currentStep < 0) return;
-                
-                // Remove the last state from history
-                if (history.length > 1) {
-                    history.pop();
-                }
-                
-                // Restore previous state
-                const prevState = history[history.length - 1];
-                frames = [...prevState.frames];
-                counters = {...prevState.counters};
-                referenceBits = {...prevState.referenceBits};
-                modifyBits = {...prevState.modifyBits};
-                historyBits = {...prevState.historyBits};
-                clockPointer = prevState.clockPointer;
-                pageLoadOrder = [...prevState.pageLoadOrder];
-                
-                // Update counters
-                if (currentStep >= 0) {
-                    const page = referenceString[currentStep];
-                    if (prevState.pageFault) {
-                        pageFaults--;
-                    } else {
-                        pageHits--;
+            column.appendChild(cell);
+        }
+        
+        framesDisplay.appendChild(column);
+    }
+    
+    // Scroll to right to see latest step
+    framesDisplay.scrollLeft = framesDisplay.scrollWidth;
+}
+
+// Next step in visualization
+function nextStep() {
+    if (currentStep >= referenceString.length - 1) return;
+    
+    currentStep++;
+    
+    // Highlight current reference
+    const prevRef = document.getElementById(`ref-${currentStep - 1}`);
+    if (prevRef) prevRef.classList.remove('current');
+    
+    const currRef = document.getElementById(`ref-${currentStep}`);
+    if (currRef) {
+        currRef.classList.add('current');
+        currRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    
+    const pageToAccess = referenceString[currentStep];
+    let pageFault = false;
+    let victimPage = null;
+    let stepDescription = '';
+    
+    // Check if page is already in memory
+    const pageIndex = frames.indexOf(pageToAccess);
+    
+    if (pageIndex !== -1) {
+        // Page hit
+        pageHits++;
+        stepDescription = `Page ${pageToAccess} is already in frame F${pageIndex}. Page HIT.`;
+        
+        // Update counters for LFU/MFU
+        counters[pageToAccess]++;
+        
+        // Set reference bit for algorithms that use it
+        referenceBits[pageToAccess] = 1;
+        
+        // For additional reference bit algorithm, update history
+        if (algorithmSelect.value === 'additional-reference-bit') {
+            historyBits[pageToAccess] = (historyBits[pageToAccess] >> 1) | 128; // Set MSB and shift right
+        }
+        
+        // Randomly set modify bit sometimes for enhanced second chance (just for demonstration)
+        if (algorithmSelect.value === 'enhanced-second-chance' && Math.random() > 0.7) {
+            modifyBits[pageToAccess] = 1;
+        }
+    } else {
+        // Page fault
+        pageFault = true;
+        pageFaults++;
+        
+        // Check if there's an empty frame
+        const emptyFrameIndex = frames.indexOf(null);
+        
+        if (emptyFrameIndex !== -1) {
+            // Place page in empty frame
+            frames[emptyFrameIndex] = pageToAccess;
+            pageLoadOrder.push(pageToAccess);
+            stepDescription = `Page ${pageToAccess} loaded into empty frame F${emptyFrameIndex}. Page FAULT.`;
+            
+            // Initialize counter, reference bit, and modify bit
+            counters[pageToAccess] = 1;
+            referenceBits[pageToAccess] = 0;
+            modifyBits[pageToAccess] = 0;
+            
+            // For additional reference bit algorithm, update history
+            if (algorithmSelect.value === 'additional-reference-bit') {
+                historyBits[pageToAccess] = 128; // Set only MSB
+            }
+        } else {
+            // Need to replace a page
+            const algorithm = algorithmSelect.value;
+            let victimIndex = 0;
+            
+            // Different page replacement algorithms
+            switch (algorithm) {
+                case 'fifo':
+                    // Get the oldest page (first in)
+                    const oldestPage = pageLoadOrder[0];
+                    victimIndex = frames.indexOf(oldestPage);
+                    victimPage = frames[victimIndex];
+                    
+                    // Update page load order
+                    pageLoadOrder.shift();
+                    pageLoadOrder.push(pageToAccess);
+                    
+                    stepDescription = `Using FIFO: Page ${victimPage} was loaded first, replacing it with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
+                    break;
+                    
+                    case 'lru':
+    // Find the least recently used page by checking when each frame was last accessed
+    let leastRecentUsed = Infinity;
+    let lruIndex = 0;
+    
+    // For each frame, find when it was last accessed
+    for (let i = 0; i < frames.length; i++) {
+        const page = frames[i];
+        let lastUsed = -1;
+        
+        // Look backward through reference string to find when this page was last accessed
+        for (let j = currentStep - 1; j >= 0; j--) {
+            if (referenceString[j] === page) {
+                lastUsed = j;
+                break;
+            }
+        }
+        
+        // If this page was used less recently than our current LRU page, update
+        if (lastUsed < leastRecentUsed) {
+            leastRecentUsed = lastUsed;
+            lruIndex = i;
+        }
+    }
+    
+    victimIndex = lruIndex;
+    victimPage = frames[victimIndex];
+    
+    stepDescription = `Using LRU: Page ${victimPage} was least recently used, replacing it with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
+    break;
+                    
+                case 'optimal':
+                    // Find the page that won't be used for the longest time in the future
+                    let farthestIndex = -1;
+                    let farthestPage = null;
+                    let farthestDistance = -1;
+                    
+                    for (let i = 0; i < frames.length; i++) {
+                        const page = frames[i];
+                        const futureUse = referenceString.slice(currentStep + 1).indexOf(page);
+                        
+                        // If page won't be used again, select it
+                        if (futureUse === -1) {
+                            farthestIndex = i;
+                            farthestPage = page;
+                            break;
+                        }
+                        
+                        // Otherwise, find the page used farthest in the future
+                        if (futureUse > farthestDistance) {
+                            farthestDistance = futureUse;
+                            farthestIndex = i;
+                            farthestPage = page;
+                        }
                     }
-                }
+                    
+                    victimIndex = farthestIndex;
+                    victimPage = frames[victimIndex];
+                    
+                    stepDescription = `Using Optimal: Page ${victimPage} won't be used for the longest time, replacing it with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
+                    break;
+                    
+                case 'lfu':
+                    // Find the least frequently used page
+                    let minCount = Infinity;
+                    let lfuIndex = 0;
+                    
+                    for (let i = 0; i < frames.length; i++) {
+                        const page = frames[i];
+                        if (counters[page] < minCount) {
+                            minCount = counters[page];
+                            lfuIndex = i;
+                        }
+                    }
+                    
+                    victimIndex = lfuIndex;
+                    victimPage = frames[victimIndex];
+                    
+                    // Reset counter for the new page
+                    counters[pageToAccess] = 1;
+                    referenceBits[pageToAccess] = 1;
+                    modifyBits[pageToAccess] = 0;
+                    
+                    stepDescription = `Using LFU: Page ${victimPage} was used ${counters[victimPage]} times (least frequent), replacing it with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
+                    break;
+                    
+                case 'mfu':
+                    // Find the most frequently used page
+                    let maxCount = -1;
+                    let mfuIndex = 0;
+                    
+                    for (let i = 0; i < frames.length; i++) {
+                        const page = frames[i];
+                        if (counters[page] > maxCount) {
+                            maxCount = counters[page];
+                            mfuIndex = i;
+                        }
+                    }
+                    
+                    victimIndex = mfuIndex;
+                    victimPage = frames[victimIndex];
+                    
+                    // Reset counter for the new page
+                    counters[pageToAccess] = 1;
+                    referenceBits[pageToAccess] = 1;
+                    modifyBits[pageToAccess] = 0;
+                    
+                    stepDescription = `Using MFU: Page ${victimPage} was used ${counters[victimPage]} times (most frequent), replacing it with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
+                    break;
+                    
+                case 'additional-reference-bit':
+                    // Find the page with the lowest history value
+                    let minHistory = Infinity;
+                    let minHistoryIndex = 0;
+                    
+                    for (let i = 0; i < frames.length; i++) {
+                        const page = frames[i];
+                        if (historyBits[page] < minHistory) {
+                            minHistory = historyBits[page];
+                            minHistoryIndex = i;
+                        }
+                    }
+                    
+                    victimIndex = minHistoryIndex;
+                    victimPage = frames[victimIndex];
+                    
+                    // Set history for the new page
+                    historyBits[pageToAccess] = 128; // Set only MSB
+                    
+                    stepDescription = `Using Additional Reference Bit: Page ${victimPage} had lowest history value ${minHistory.toString(2).padStart(8, '0')}, replacing it with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
+                    break;
+                    
+                case 'second-chance':
+                    // Start from the clock pointer and find the first page with reference bit = 0
+                    let found = false;
+                    let scStartPointer = clockPointer;
+                    let scIterations = 0;
+                    
+                    while (!found && scIterations < frames.length * 2) {
+                        const page = frames[clockPointer];
+                        
+                        if (referenceBits[page] === 0) {
+                            found = true;
+                            victimIndex = clockPointer;
+                            victimPage = page;
+                        } else {
+                            // Give second chance by clearing reference bit
+                            referenceBits[page] = 0;
+                            // Move clock pointer
+                            clockPointer = (clockPointer + 1) % frames.length;
+                        }
+                        
+                        scIterations++;
+                    }
+                    
+                    // If no page with reference bit 0 found, use the current pointer
+                    if (!found) {
+                        victimIndex = clockPointer;
+                        victimPage = frames[clockPointer];
+                    }
+                    
+                    // Set reference bit for new page
+                    referenceBits[pageToAccess] = 1;
+                    
+                    // Move clock pointer to next position
+                    clockPointer = (victimIndex + 1) % frames.length;
+                    
+                    stepDescription = `Using Second Chance: Clock pointer at F${victimIndex}, Page ${victimPage} selected for replacement with Page ${pageToAccess}. Page FAULT.`;
+                    break;
+                    case 'enhanced-second-chance':
+    // Implementation of Enhanced Second Chance algorithm
+    // It uses both reference (R) and modify (M) bits to create 4 classes:
+    // (0,0) - Not recently used, not modified - first to replace
+    // (0,1) - Not recently used, modified - second to replace
+    // (1,0) - Recently used, not modified - third to replace
+    // (1,1) - Recently used, modified - last to replace
+    
+    // First, set reference bit for the current page access
+    referenceBits[pageToAccess] = 1;
+    
+    // Track candidates for each class
+    let candidates = [[], [], [], []];
+    let victimR = 0;
+    let victimM = 0;
+    
+    // First scan: categorize all pages into their classes
+    for (let i = 0; i < frames.length; i++) {
+        const page = frames[i];
+        const classIndex = referenceBits[page] * 2 + modifyBits[page];
+        candidates[classIndex].push({ page, index: i });
+    }
+    
+    // Find the lowest class that has candidates
+    let selectedClass = -1;
+    for (let i = 0; i < 4; i++) {
+        if (candidates[i].length > 0) {
+            selectedClass = i;
+            break;
+        }
+    }
+    
+    // If no class 0 candidates found, clear reference bits and re-categorize
+    if (selectedClass > 0) {
+        // Clear reference bits for all pages (not just class 2 and 3)
+        for (let i = 0; i < frames.length; i++) {
+            const page = frames[i];
+            referenceBits[page] = 0;
+        }
+        
+        // Re-categorize after clearing reference bits
+        candidates = [[], [], [], []];
+        for (let i = 0; i < frames.length; i++) {
+            const page = frames[i];
+            const classIndex = referenceBits[page] * 2 + modifyBits[page];
+            candidates[classIndex].push({ page, index: i });
+        }
+        
+        // Find lowest class again
+        selectedClass = -1;
+        for (let i = 0; i < 4; i++) {
+            if (candidates[i].length > 0) {
+                selectedClass = i;
+                break;
+            }
+        }
+    }
+    
+    // Use clock algorithm within the selected class
+    let victimFound = false;
+    let iterations = 0;
+    const startPointer = clockPointer;
+    
+    while (!victimFound && iterations < frames.length) {
+        const currentPage = frames[clockPointer];
+        const currentClass = referenceBits[currentPage] * 2 + modifyBits[currentPage];
+        
+        if (currentClass === selectedClass) {
+            victimIndex = clockPointer;
+            victimPage = currentPage;
+            victimR = referenceBits[currentPage];
+            victimM = modifyBits[currentPage];
+            victimFound = true;
+            break;
+        }
+        
+        clockPointer = (clockPointer + 1) % frames.length;
+        iterations++;
+        
+        if (clockPointer === startPointer && !victimFound) {
+            if (candidates[selectedClass].length > 0) {
+                victimIndex = candidates[selectedClass][0].index;
+                victimPage = candidates[selectedClass][0].page;
+                victimR = referenceBits[victimPage];
+                victimM = modifyBits[victimPage];
+                victimFound = true;
+            }
+        }
+    }
+    
+    if (!victimFound) {
+        victimIndex = 0;
+        victimPage = frames[0];
+        victimR = referenceBits[victimPage];
+        victimM = modifyBits[victimPage];
+    }
+    
+    // Set reference bit and modify bit for new page
+    referenceBits[pageToAccess] = 1;  // New pages are recently used
+    modifyBits[pageToAccess] = 0;     // Initially not modified
+    
+    // Move clock pointer to next position
+    clockPointer = (victimIndex + 1) % frames.length;
+    
+    // Use the stored R and M values for the victim page for the message
+    const victimClass = `(${victimR},${victimM})`;
+    const classNames = [
+        "lowest priority (not recently used, not modified)", 
+        "second priority (not recently used, modified)",
+        "third priority (recently used, not modified)",
+        "highest priority (recently used, modified)"
+    ];
+    const classIndex = victimR * 2 + victimM;
+    
+    stepDescription = `Using Enhanced Second Chance: Page ${victimPage} with class ${victimClass} (${classNames[classIndex]}) selected for replacement with Page ${pageToAccess}. Page FAULT.`;
+    break;
                 
-                currentStep--;
-                
-                // Update UI
-                renderFrames();
-                updateResults();
-                
-                // Update reference string display
-                document.querySelectorAll('.reference-cell').forEach(cell => cell.classList.remove('current'));
-                if (currentStep >= 0) {
-                    document.getElementById(`ref-${currentStep}`).classList.add('current');
-                }
-                
-                // Update step message
-                stepMessageDiv.innerHTML = prevState.stepDescription;
-                
-                // Update navigation buttons
-                nextStepButton.disabled = false;
-                prevStepButton.disabled = currentStep < 0;
+                default:
+                    // Default to FIFO
+                    victimIndex = 0;
+                    victimPage = frames[0];
+                    stepDescription = `Using default algorithm: Replacing Page ${victimPage} with Page ${pageToAccess} in frame F${victimIndex}. Page FAULT.`;
             }
             
-            // Initialize the visualization
-            init();
+            // Replace the victim page
+            frames[victimIndex] = pageToAccess;
+        }
+    }
+    
+    // Save the current state to history
+    history.push({
+        frames: [...frames],
+        counters: {...counters},
+        referenceBits: {...referenceBits},
+        modifyBits: {...modifyBits},
+        historyBits: {...historyBits},
+        clockPointer: clockPointer,
+        pageFault: pageFault,
+        victim: victimPage,
+        accessed: pageToAccess,
+        pageLoadOrder: [...pageLoadOrder],
+        stepDescription: stepDescription
+    });
+    
+    // Update UI
+    stepMessageDiv.innerHTML = stepDescription;
+    renderFrames();
+    updateResults();
+    
+    // Enable/disable buttons
+    prevStepButton.disabled = false;
+    nextStepButton.disabled = currentStep >= referenceString.length - 1;
+}
+
+// Previous step in visualization
+function prevStep() {
+    if (currentStep < 0) return;
+    
+    // Remove current step from history
+    if (history.length > 1) {
+        history.pop();
+    }
+    
+    // Get previous state
+    const prevState = history[history.length - 1];
+    frames = [...prevState.frames];
+    counters = {...prevState.counters};
+    referenceBits = {...prevState.referenceBits};
+    modifyBits = {...prevState.modifyBits};
+    historyBits = {...prevState.historyBits};
+    clockPointer = prevState.clockPointer;
+    pageLoadOrder = [...prevState.pageLoadOrder];
+    
+    // If it was a page fault, decrement counter
+    if (currentStep >= 0 && prevState.pageFault) {
+        pageFaults--;
+    } else if (currentStep >= 0 && !prevState.pageFault && prevState.accessed !== null) {
+        pageHits--;
+    }
+    
+    currentStep--;
+    
+    // Update reference highlighting
+    const currRef = document.getElementById(`ref-${currentStep}`);
+    if (currRef) {
+        document.querySelectorAll('.reference-cell').forEach(el => el.classList.remove('current'));
+        currRef.classList.add('current');
+        currRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    
+    // Update UI
+    stepMessageDiv.innerHTML = prevState.stepDescription;
+    renderFrames();
+    updateResults();
+    
+    // Enable/disable buttons
+    nextStepButton.disabled = false;
+    prevStepButton.disabled = currentStep < 0;
+}
+
+// Update results display
+function updateResults() {
+    if (currentStep < 0) {
+        resultsDiv.innerHTML = '<p>Press "Start Visualization" to begin...</p>';
+        return;
+    }
+    
+    const total = currentStep + 1;
+    const faultRate = (pageFaults / total * 100).toFixed(2);
+    const hitRate = (pageHits / total * 100).toFixed(2);
+    
+    resultsDiv.innerHTML = `
+        <p><strong>Pages Accessed:</strong> ${total}</p>
+        <p><strong>Page Faults:</strong> ${pageFaults} (${faultRate}%)</p>
+        <p><strong>Page Hits:</strong> ${pageHits} (${hitRate}%)</p>
+    `;
+}
+
+// Initialize the app
+init();
         });
     </script>
 </body>
