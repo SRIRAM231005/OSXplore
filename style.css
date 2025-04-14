@@ -295,14 +295,17 @@
 }
 
 .member-info h3 {
-    color: #36187d;
+    background: linear-gradient(to right, #818cf8, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     font-size: 1.2em;
     font-weight: 600;
     margin-bottom: 4px;
 }
 
 .member-info span {
-    color: #666;
+    color: #e8e8e8;
     font-size: 0.9em;
 }
 
@@ -311,7 +314,10 @@
 }
 
 .project-info p {
-    color: #36187d;
+    background: linear-gradient(to right, #818cf8, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     font-size: 1em;
     font-weight: 500;
 }
