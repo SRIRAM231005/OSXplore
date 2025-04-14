@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Calls Demonstration</title>
+    <link rel="stylesheet" href="syscall.css">
+</head>
+<body>
+    <header>
+        <h1>System Calls Visualization</h1>
+        <p>Interactive demonstration of common system calls</p>
+    </header>
+
+    <div class="modules-container">
+        <!-- Process Management Module -->
+        <section class="process-module">
+            <h2>Process Management</h2>
+            <nav class="system-calls-nav">
+                <button class="nav-btn active" data-call="fork">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 16h4m-4 0v4m-4-6h2a4 4 0 0 0 4-4V6a4 4 0 0 0-4-4h-2M8 16h2m-2 0v4m-4-6h2a4 4 0 0 0 4-4V6a4 4 0 0 0-4-4H4"/></svg>
+                    Fork()
+                </button>
+                <button class="nav-btn" data-call="exec">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg>
+                    Exec()
+                </button>
+                <button class="nav-btn" data-call="wait">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Wait()
+                </button>
+                <button class="nav-btn" data-call="exit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Exit()
+                </button>
+            </nav>
+
+            <div class="info-panel">
+                <div id="syscall-info">
+                    <h2>Fork() System Call</h2>
+                    <p>Creates a new process by duplicating the calling process</p>
+                    <pre><code>pid_t pid = fork();
+if (pid == 0) {
+    // Child process
+    printf("Child process\n");
+} else if (pid &gt; 0) {
+    // Parent process
+    printf("Parent process\n");
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="visualization-panel">
+                <div id="fork-demo" class="demo active">
+                    <div class="process-tree">
+                        <div class="process" data-pid="1">
+                            <button class="process-btn">PID: 1</button>
+                            <div class="children"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="exec-demo" class="demo">
+                    <div class="process-selector">
+                        <h3>Select Process to Execute:</h3>
+                        <div class="process-list"></div>
+                    </div>
+                    <div class="terminal">
+                        <div class="terminal-header">Terminal</div>
+                        <div class="terminal-body">
+                            <div class="command-selector hidden">
+                                <h4>Select Command to Execute:</h4>
+                                <select class="command-select">
+                                    <option value="ls">/bin/ls</option>
+                                    <option value="ps">/bin/ps</option>
+                                    <option value="date">/bin/date</option>
+                                </select>
+                                <button class="execute-btn">Execute</button>
+                            </div>
+                            <div class="output hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wait-demo" class="demo">
+                    <div class="process-selector">
+                        <h3>Select Parent Process:</h3>
+                        <div class="process-list"></div>
+                    </div>
+                    <div class="process-container">
+                        <div class="parent-process">
+                            <div class="status">Select a parent process</div>
+                        </div>
+                        <div class="child-process">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="exit-demo" class="demo">
+                    <div class="process-selector">
+                        <h3>Select Process to Exit:</h3>
+                        <div class="process-list"></div>
+                    </div>
+                    <div class="exit-container">
+                        <div class="process-box">
+                            <div class="process-header">Select a process to exit</div>
+                            <div class="process-status">Running...</div>
+                            <button class="exit-btn" disabled>Exit Process</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Operations Module -->
+        <section class="file-module">
+            <h2>File Operations</h2>
+            <nav class="file-operations-nav">
+                <button class="file-nav-btn active" data-op="open">Open()</button>
+                <button class="file-nav-btn" data-op="write">Write()</button>
+                <button class="file-nav-btn" data-op="read">Read()</button>
+                <button class="file-nav-btn" data-op="files">Open Files</button>
+            </nav>
+
+            <div class="info-panel">
+                <div id="file-info">
+                    <h2>Open() System Call</h2>
+                    <p>Opens or creates a file</p>
+                    <pre><code>int fd = open("filename", O_RDWR | O_CREAT, 0644);
+if (fd &lt; 0) {
+    perror("Error opening file");
+    return -1;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="file-operations-panel">
+                <div id="open-demo" class="file-demo active">
+                    <div class="file-operation">
+                        <input type="text" class="filename-input" placeholder="Enter filename">
+                        <button class="open-file-btn">Open File</button>
+                    </div>
+                </div>
+
+                <div id="write-demo" class="file-demo">
+                    <div class="file-operation">
+                        <select class="fd-select"></select>
+                        <textarea class="write-content" placeholder="Enter content to write"></textarea>
+                        <button class="write-file-btn">Write to File</button>
+                        <div class="write-status"></div>
+                    </div>
+                </div>
+
+                <div id="read-demo" class="file-demo">
+                    <div class="file-operation">
+                        <select class="fd-select"></select>
+                        <button class="read-file-btn">Read File</button>
+                        <pre class="read-output"></pre>
+                    </div>
+                </div>
+
+                <div id="files-demo" class="file-demo">
+                    <div class="open-files-list"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="syscall.js"></script>
+</body>
+</html>

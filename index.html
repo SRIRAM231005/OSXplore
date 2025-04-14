@@ -1,179 +1,269 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OSXplore - Visual OS Concepts</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="background-decoration"></div>
-  <div class="gradient-overlay"></div>
-  <div class="backgroundBoxes"></div>
-  <div class="blob" id="blob"></div>
-  <main>
-    <!-- Hero section -->
-    <section class="hero">
-      <div class="hero-content">
-        <h1>OSXplore</h1>
-        <p class="subtitle">Explore core OS concepts visually</p>
-        <button class="scroll-button" onclick="scrollToFeatures()">
-          Explore
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        </button>
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>   
+  <meta charset="UTF-8">   
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+  <title>OSXplore - Visual OS Concepts</title>   
+  <link rel="stylesheet" href="style.css">   
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+</head> 
+<body>   
+  <div class="background-decoration"></div>   
+  <div class="gradient-overlay"></div>   
+  <div class="backgroundBoxes"></div>   
+  <div class="blob" id="blob"></div>   
+  <main>     
+      
+    <section class="hero">       
+      <div class="hero-content">         
+        <h1>OSXplore</h1>         
+        <p class="subtitle">Explore core OS concepts visually</p>         
+        <button class="scroll-button" onclick="scrollToFeatures()">           
+          Explore           
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>         
+        </button>       
+      </div>     
+    </section>      
+    
+    
+    <section class="features" id="features">       
+      <div class="features-grid">         
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='Memory Management Algorithms/conti.html'">             
+            <img src="images/memoryAllocationTechniques.png" alt="Memory Allocation" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Memory Allocation Techniques</h3>               
+              <p>Visualize how operating systems handle memory allocation and management in real-time.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='Process-Synchronization/opening_page.html'">             
+            <img src="images/processSync.jpg" alt="Process Synchronization" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Process Synchronization</h3>               
+              <p>Understand complex synchronization mechanisms through interactive demonstrations.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='CPU-Scheduling/index.html'">             
+            <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=800" alt="CPU Scheduling" class="feature-image">             
+            <div class="feature-text">               
+              <h3>CPU Scheduling</h3>               
+              <p>Explore different CPU scheduling algorithms and their impact on system performance.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='Deadlock Avoidance and Prevention/index.html'">             
+            <img src="images/Deadlock Prevention.png" alt="Deadlock Avoidance and Prevention" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Deadlock Avoidance and Prevention</h3>               
+              <p>Explore different Deadlock Avoidance and Prevention algorithms with interactive visualizations.</p>             
+            </div>           
+          </div>         
+        </div>               
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='Disk-Scheduling/DiskScheduling.html'">             
+            <img src="images/Disk.png" alt="Disk Scheduling" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Disk Scheduling</h3>               
+              <p>Compare disk scheduling algorithms based on seek time, latency, and fairness.</p>             
+            </div>           
+          </div>         
+        </div>                  
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='page-replacement/index.html'">             
+            <img src="images/page-replacement.png" alt="page-replacement" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Page Replacement</h3>               
+              <p>When RAM is full and a new page is needed, the OS removes an old page to make space.</p>             
+            </div>           
+          </div>         
+        </div>                  
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='File_Allocation/fileinfo.html'">             
+            <img src="images/fa.jpeg" alt="file-allocation" class="feature-image">             
+            <div class="feature-text">               
+              <h3>File Allocation</h3>               
+              <p>Choose a file allocation strategy to control how your files are organized and stored on disk.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='MFT-MVT/index.html'">             
+            <img src="images/MFT-MVT.png" alt="file-allocation" class="feature-image">             
+            <div class="feature-text">               
+              <h3>MFT-MVT</h3>               
+              <p>Choose a memory allocation strategy to allocation processes using MFT and MVT algorithms.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='Paging-Simulation/paging.html'">             
+            <img src="images/memoryPagingSimulation.png" alt="file-allocation" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Paging Simulation</h3>               
+              <p>Simulating Memory Allocation of pages to respective frames using a page Table and TLB.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='Frame_Allocation/frame1.html'">             
+            <img src="images/HeroImage2.jpg" alt="frame-allocation" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Frame Allocation</h3>               
+              <p>Dynamic simulator for visualizing frame allocation strategies in operating systems.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='File-Organization/index.html'">             
+            <img src="images/file-organization.png" alt="file-organization" class="feature-image">             
+            <div class="feature-text">               
+              <h3>File Organization & Hierarchy</h3>               
+              <p>Learn how operating systems organize files using single-level, two-level, and hierarchical directory structures.</p>             
+            </div>           
+          </div>         
+        </div>          
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='IPC/index.html'">             
+            <img src="images/ipc-communication.png" alt="inter-process-communication" class="feature-image">             
+            <div class="feature-text">               
+              <h3>Process Communication (Inter and Intra)</h3>               
+              <p>Interactive guide and simulator for understanding IPC concepts like message passing, shared memory, and pipes.</p>             
+            </div>           
+          </div>         
+        </div>                  
+        
+        <div class="feature-card" data-scroll>           
+          <div class="feature-content" onclick="window.location.href='SystemCalls/index.html'">             
+            <img src="images/syscall.png" alt="system-calls" class="feature-image">             
+            <div class="feature-text">               
+              <h3>System Calls</h3>               
+              <p>Visualisation of the workings of different system calls on Linux</p>             
+            </div>           
+          </div>         
+        </div>                
+      </div>     
+    </section>      
+    
+    <section class="team-section">         
+      <h2 class="section-title">Our Team</h2>         
+      <div class="team-grid">
+        
+        <div class="team-card">
+          <div class="number">01</div>
+          <div class="content">
+            <div class="person-info">
+              <div class="name">Atharva Parkhi</div>
+              <div class="id">231CS115</div>
+            </div>
+            <div class="topics">
+              <div class="topic">Frame Allocation</div>
+              <div class="topic">File Allocation</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="team-card">
+          <div class="number">02</div>
+          <div class="content">
+            <div class="person-info">
+              <div class="name">Sriram</div>
+              <div class="id">231CS116</div>
+            </div>
+            <div class="topics">
+              <div class="topic">Memory Allocation Techniques</div>
+              <div class="topic">Paging Simulation</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="team-card">
+          <div class="number">03</div>
+          <div class="content">
+            <div class="person-info">
+              <div class="name">Charuneya</div>
+              <div class="id">231CS117</div>
+            </div>
+            <div class="topics">
+              <div class="topic">Deadlock Avoidance and Prevention</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="number">04</div>
+          <div class="content">
+            <div class="person-info">
+              <div class="name">Amulya</div>
+              <div class="id">231CS111</div>
+            </div>
+            <div class="topics">
+              <div class="topic">CPU Scheduling</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="number">05</div>
+          <div class="content">
+            <div class="person-info">
+              <div class="name">Atharva Rege</div>
+              <div class="id">231CS114</div>
+            </div>
+            <div class="topics">
+              <div class="topic">Process Synchronization</div>
+            </div>
+          </div>
+        </div>
+        
       </div>
-    </section>
-
-    <!-- Features section -->
-    <section class="features" id="features">
-      <div class="features-grid">
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='Memory Management Algorithms/conti.html'">
-            <img src="images/memoryAllocationTechniques.png" alt="Memory Allocation" class="feature-image">
-            <div class="feature-text">
-              <h3>Memory Allocation Techniques</h3>
-              <p>Visualize how operating systems handle memory allocation and management in real-time.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='Process-Synchronization/opening_page.html'">
-            <img src="images/processSync.jpg" alt="Process Synchronization" class="feature-image">
-            <div class="feature-text">
-              <h3>Process Synchronization</h3>
-              <p>Understand complex synchronization mechanisms through interactive demonstrations.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='CPU-Scheduling/index.html'">
-            <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=800" alt="CPU Scheduling" class="feature-image">
-            <div class="feature-text">
-              <h3>CPU Scheduling</h3>
-              <p>Explore different CPU scheduling algorithms and their impact on system performance.</p>
-            </div>
-          </div>
-        </div>
-     
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='Disk-Scheduling/DiskScheduling.html'">
-            <img src="images/Disk.png" alt="Disk Scheduling" class="feature-image">
-            <div class="feature-text">
-              <h3>Disk Scheduling</h3>
-              <p>Compare disk scheduling algorithms based on seek time, latency, and fairness.</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='page-replacement/index.html'">
-            <img src="images/page-replacement.png" alt="page-replacement" class="feature-image">
-            <div class="feature-text">
-              <h3>Page Replacement</h3>
-              <p>When RAM is full and a new page is needed, the OS removes an old page to make space.</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='File_Allocation/fileinfo.html'">
-            <img src="images/fa.jpeg" alt="file-allocation" class="feature-image">
-            <div class="feature-text">
-              <h3>File Allocation</h3>
-              <p>Choose a file allocation strategy to control how your files are organized and stored on disk.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='MFT-MVT/index.html'">
-            <img src="images/MVT-MFT.png" alt="file-allocation" class="feature-image">
-            <div class="feature-text">
-              <h3>MFT-MVT</h3>
-              <p>Choose a memory allocation strategy to allocation processes using MFT and MVT algorithms.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='Paging-Simulation/paging.html'">
-            <img src="images/memoryPagingSimulation.png" alt="file-allocation" class="feature-image">
-            <div class="feature-text">
-              <h3>Paging Simulation</h3>
-              <p>Simulating Memory Allocation of pages to respective frames using a page Table and TLB.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='Frame_Allocation/frame1.html'">
-            <img src="images/HeroImage2.jpg" alt="frame-allocation" class="feature-image">
-            <div class="feature-text">
-              <h3>Frame Allocation</h3>
-              <p>Dynamic simulator for visualizing frame allocation strategies in operating systems.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='File-Organization/index.html'">
-            <img src="images/file-organization.png" alt="file-organization" class="feature-image">
-            <div class="feature-text">
-              <h3>File Organization & Hierarchy</h3>
-              <p>Learn how operating systems organize files using single-level, two-level, and hierarchical directory structures.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-card" data-scroll>
-          <div class="feature-content" onclick="window.location.href='IPC/index.html'">
-            <img src="images/ipc-communication.png" alt="inter-process-communication" class="feature-image">
-            <div class="feature-text">
-              <h3>Process Communication (Inter and Intra)</h3>
-              <p>Interactive guide and simulator for understanding IPC concepts like message passing, shared memory, and pipes.</p>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-      <p>© 2025 OS Simulator Team | Designed with ❤️</p>
-    </footer>
-  </main>
-
-  <script>
-    function scrollToFeatures() {
-      document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Intersection Observer for scroll animations
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('[data-scroll]').forEach((el) => observer.observe(el));
-
-
-    /*const blob = document.getElementById('blob');
-
-        function moveBlob() {
-            const x = Math.random() * (window.innerWidth - 200);
-            const y = Math.random() * (window.innerHeight - 200);
-            blob.style.transform = `translate(${x}px, ${y}px)`;
-        }
-
-        setInterval(moveBlob, 5000); // Move every 5 seconds
-        moveBlob(); // Initial move*/
-  </script>
-  <script src="script.js"></script>
-</body>
+    </section>      
+    
+    <footer>       
+      <p>© 2025 OS Simulator Team | Designed with ❤️</p>     
+    </footer>   
+  </main>    
+  
+  <script>     
+    function scrollToFeatures() {       
+      document.getElementById('features').scrollIntoView({ behavior: 'smooth' });     
+    }      
+    
+    const observer = new IntersectionObserver((entries) => {       
+      entries.forEach(entry => {         
+        if (entry.isIntersecting) {           
+          entry.target.classList.add('visible');         
+        }       
+      });     
+    }, { threshold: 0.1 });      
+    
+    document.querySelectorAll('[data-scroll]').forEach((el) => observer.observe(el));       
+    
+    /*const blob = document.getElementById('blob');          
+    function moveBlob() {             
+      const x = Math.random() * (window.innerWidth - 200);             
+      const y = Math.random() * (window.innerHeight - 200);             
+      blob.style.transform = `translate(${x}px, ${y}px)`;         
+    }          
+    
+    setInterval(moveBlob, 5000); // Move every 5 seconds         
+    moveBlob(); // Initial move*/   
+  </script>   
+  <script src="script.js"></script> 
+</body> 
 </html>
