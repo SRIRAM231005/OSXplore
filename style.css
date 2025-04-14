@@ -201,7 +201,6 @@ h1 {
   font-size: 1.1rem;
 }
 
-/* Team Section - Updated with new card design */
 .team-section {
   max-width: 1200px;
   margin: 0 auto;
@@ -230,8 +229,7 @@ h1 {
 .team-card {
   position: relative;
   width: 100%;
-  height: auto;
-  min-height: 80px;
+  height: 80px;
   background-color: rgba(22, 27, 34, 0.5);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(48, 54, 61, 0.2);
@@ -264,7 +262,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
+  padding: 0 30px;
 }
 
 .person-info {
@@ -287,15 +285,13 @@ h1 {
   font-size: 0.9em;
 }
 
-/* Topics section styling */
+/* Updated topic boxes with rounded edges */
 .topics {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
 }
 
-/* Styling for both the original topic divs and new topic buttons */
-.topic, .topic-button {
+.topic {
   background: #36187d;
   color: #e8e8e8;
   padding: 8px 16px;
@@ -304,40 +300,11 @@ h1 {
   font-weight: 500;
   white-space: nowrap;
   transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-  cursor: pointer;
-  border: none;
 }
 
-/* Updated hover effect for both original and new buttons */
-.topic:hover, .topic-button:hover {
-  background: linear-gradient(135deg, #4a2ba0, #6366f1);
+.topic:hover {
+  background: #4a2ba0;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-/* Add a subtle pulse animation for the topic buttons */
-.topic-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.topic-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 150%;
-  height: 150%;
-  background: rgba(255, 255, 255, 0.1);
-  transform: translate(-50%, -50%) scale(0);
-  border-radius: 50%;
-  transition: transform 0.6s;
-}
-
-.topic-button:hover::after {
-  transform: translate(-50%, -50%) scale(1);
 }
 
 footer {
@@ -366,6 +333,10 @@ footer {
     padding: 15px 20px;
   }
   
+  .team-card {
+    height: auto;
+  }
+  
   .person-info {
     margin-bottom: 10px;
   }
@@ -385,7 +356,7 @@ footer {
     padding: 10px 15px;
   }
   
-  .topic, .topic-button {
+  .topic {
     padding: 6px 12px;
     font-size: 0.8em;
   }
