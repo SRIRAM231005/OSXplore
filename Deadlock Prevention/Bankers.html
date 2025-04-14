@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banker's Algorithm Visualizer</title>
+    <link rel="stylesheet" href="stylesnew.css">
+</head>
+<body>
+    <div class="background-decoration"></div>
+    <div class="gradient-overlay"></div>
+    <div class="backgroundBoxes"></div>
+    <div class="blob"></div>
+
+    <div class="container">
+        <h1>Banker's Algorithm Visualizer</h1>
+        
+        <div class="container-explanation">
+            <h2>What is the Banker's Algorithm?</h2>
+            <div class="dropdown">
+                <button class="dropdown-btn">Click to Learn About Banker's Algorithm ▼</button>
+                <div class="dropdown-content">
+                    <p>The Banker's Algorithm is a resource allocation and deadlock avoidance algorithm that tests for safety by simulating the allocation for predetermined maximum possible amounts of all resources, then makes an "s-state" check to test for possible activities, before deciding whether allocation should be allowed to continue.</p>
+                    <p><strong>Key Concepts:</strong></p>
+                    <ul>
+                        <li><strong>Resources:</strong> System resources that processes request (e.g., printers, memory)</li>
+                        <li><strong>Processes:</strong> Entities that request and use resources</li>
+                        <li><strong>Maximum Demand:</strong> Maximum resources each process might request</li>
+                        <li><strong>Allocation:</strong> Resources currently assigned to each process</li>
+                        <li><strong>Available:</strong> Resources currently available in the system</li>
+                        <li><strong>Need:</strong> Remaining resources each process might request (Max - Allocation)</li>
+                        <li><strong>Safe State:</strong> A state where the system can allocate resources to each process in some order and still avoid a deadlock</li>
+                    </ul>
+                    <p>The algorithm works by pretending to allocate resources to processes, then checking if the system would remain in a safe state. If not, the allocation is denied to prevent potential deadlock.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container" id="input-section">
+            <h2>System Setup</h2>
+            
+            <div id="resource-input">
+                <h3>Step 1: Define Resources</h3>
+                <label for="resource-count">Number of Resource Types:</label>
+                <input type="number" id="resource-count" min="1" max="10" value="3">
+                <button id="set-resources" class="scroll-button">Set Resources</button>
+                
+                <div id="resource-details" class="hidden">
+                    <h4>Available Instances of Each Resource</h4>
+                    <div id="resource-inputs"></div>
+                    <button id="save-resources" class="scroll-button">Save Resources</button>
+                </div>
+            </div>
+            
+            <div id="process-input" class="hidden">
+                <h3>Step 2: Define Processes</h3>
+                <label for="process-count">Number of Processes:</label>
+                <input type="number" id="process-count" min="1" max="10" value="5">
+                <button id="set-processes" class="scroll-button">Set Processes</button>
+                
+                <div id="process-details" class="hidden">
+                    <h4>Maximum Demand for Each Process</h4>
+                    <div id="max-demand-inputs"></div>
+                    <h4>Allocation Matrix (Currently Allocated Resources)</h4>
+                    <div id="allocation-inputs"></div>
+                    <button id="save-processes" class="scroll-button">Save Processes</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container hidden" id="visualization-section">
+            <h2>Resource Allocation Visualization</h2>
+            
+            <div id="resource-display">
+                <h3>Available Resources</h3>
+                <div id="resource-cards"></div>
+                
+                <h3>Processes</h3>
+                <div id="process-display"></div>
+            </div>
+            
+            <div class="animation-area feature-content" id="animation-area">
+                <div id="algorithm-log"></div>
+            </div>
+            
+            <div class="step-buttons">
+                <button id="start-animation" class="scroll-button">Start Simulation</button>
+                <button id="step-animation" class="scroll-button" disabled>Next Step</button>
+                <button id="reset-animation" class="scroll-button" disabled>Reset</button>
+            </div>
+            
+            <div id="result-message" class="message hidden"></div>
+            <div id="safe-sequence" class="safe-sequence hidden"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="scriptB.js"></script>
+    <script src="dropdown.js"></script>
+</body>
+</html>
