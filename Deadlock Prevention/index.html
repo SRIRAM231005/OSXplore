@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operating System Algorithm Visualizers</title>
+    <style>
+        :root {
+            --primary-color: #1a1b26;
+            --secondary-color: #24283b;
+            --accent-color: #7aa2f7;
+            --accent-light: #bb9af7;
+            --background-dark: #16161e;
+            --surface-dark: #1a1b26;
+            --text-primary: #a9b1d6;
+            --text-secondary: #7aa2f7;
+            --success-color: #9ece6a;
+            --warning-color: #e0af68;
+            --danger-color: #f7768e;
+            --border-color: rgba(167, 173, 198, 0.1);
+            --glass-bg: rgba(26, 27, 38, 0.7);
+            --glass-border: rgba(167, 173, 198, 0.1);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-dark);
+            background-image: 
+                radial-gradient(circle at 100% 0%, rgba(122, 162, 247, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(187, 154, 247, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 5px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(122, 162, 247, 0.3);
+        }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border-radius: 24px;
+            padding: 40px;
+            width: 270px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.3),
+                inset 0 0 0 1px var(--glass-border);
+            backdrop-filter: blur(20px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 
+                0 15px 45px rgba(0, 0, 0, 0.4),
+                inset 0 0 0 1px var(--glass-border);
+        }
+
+        .card h2 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-size: 1.8em;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .card a:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 5px 15px rgba(122, 162, 247, 0.3),
+                0 0 20px rgba(122, 162, 247, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Operating System Algorithm Visualizers</h1>
+        
+        <div class="card-container">
+            <div class="card">
+                <h2>Banker's Algorithm</h2>
+                <p>Step-by-step visualization of the Banker's Algorithm for understanding deadlock avoidance and resource allocation.</p>
+                <a href="Bankers.html">Explore</a>
+            </div>
+
+            <div class="card">
+                <h2>Resource Allocation Graph</h2>
+                <p>Interactive visualization of resource allocation graphs to understand resource allocation and deadlock detection.</p>
+                <a href="RAG.html">Explore</a>
+            </div>
+
+            <div class="card">
+                <h2>Wait-Die vs Wound-Wait</h2>
+                <p>Visualize and understand deadlock prevention algorithms including Wait-Die and Wound-Wait approaches.</p>
+                <a href="WW.html">Explore</a>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html> 
