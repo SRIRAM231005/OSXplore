@@ -1,0 +1,540 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #fff;
+    background: linear-gradient(to bottom right, #1a1a2e, #16213e);
+    min-height: 100vh;
+}
+
+header {
+    text-align: center;
+    padding: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: #a0aec0;
+}
+
+.system-calls-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 0.5rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background: #3b82f6;
+    transform: scale(1.05);
+}
+
+.nav-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.info-panel {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-panel h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+pre {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+code {
+    font-family: 'Fira Code', monospace;
+    color: #a0aec0;
+}
+
+.visualization-panel {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    min-height: 400px;
+}
+
+.demo {
+    display: none;
+    height: 100%;
+}
+
+.demo.active {
+    display: block;
+}
+
+/* Process Selector Styles */
+.process-selector {
+    margin-bottom: 2rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.process-selector h3 {
+    margin-bottom: 1rem;
+    color: #a0aec0;
+}
+
+.process-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.process-select-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.process-select-btn:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
+.process-select-btn.selected {
+    background: #10b981;
+}
+
+/* Process Tree Styles */
+.process-tree {
+    padding: 1rem;
+}
+
+.process {
+    margin-bottom: 1rem;
+}
+
+.process-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.process-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.process-btn:hover {
+    background: #2563eb;
+    transform: scale(1.05);
+}
+
+.process-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.process-status.running {
+    background: #10b981;
+}
+
+.process-status.terminated {
+    background: #ef4444;
+}
+
+.process-command {
+    color: #a0aec0;
+    font-family: monospace;
+}
+
+.process-files {
+    margin-left: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-descriptor {
+    background: rgba(59, 130, 246, 0.2);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+}
+
+.children {
+    margin-left: 2rem;
+    position: relative;
+}
+
+.children::before {
+    content: '';
+    position: absolute;
+    left: -1rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #3b82f6;
+    opacity: 0.5;
+}
+
+/* Open Demo Styles */
+.file-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.file {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.file:hover {
+    transform: scale(1.1);
+}
+
+.file-icon {
+    color: #3b82f6;
+}
+
+.file-info {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.success {
+    color: #10b981;
+    margin-top: 0.5rem;
+}
+
+.process-info {
+    color: #a0aec0;
+    margin-top: 0.5rem;
+}
+
+/* Exec Demo Styles */
+.terminal {
+    background: #1a1a2e;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.terminal-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.terminal-body {
+    padding: 1rem;
+    font-family: monospace;
+}
+
+.command-selector {
+    margin-bottom: 1rem;
+}
+
+.command-selector h4 {
+    margin-bottom: 0.5rem;
+    color: #a0aec0;
+}
+
+.command-select {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-right: 0.5rem;
+}
+
+.execute-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.execute-btn:hover {
+    background: #2563eb;
+}
+
+.command {
+    color: #10b981;
+}
+
+.output {
+    margin-top: 0.5rem;
+    color: #a0aec0;
+}
+
+.exec-output {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0.25rem;
+}
+
+/* Wait Demo Styles */
+.process-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.parent-process,
+.child-process {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.progress-bar.running::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: var(--progress, 0%);
+    background: #3b82f6;
+    transition: width 3s linear;
+}
+
+/* Exit Demo Styles */
+.exit-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.process-box {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.process-header {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.exit-btn {
+    margin-top: 1rem;
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.exit-btn:not(:disabled):hover {
+    background: #dc2626;
+}
+
+.exit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Add new styles for file operations module */
+.modules-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.process-module,
+.file-module {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.file-operations-nav {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.file-nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.file-nav-btn.active {
+    background: #3b82f6;
+}
+
+.file-operations-panel {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    min-height: 300px;
+}
+
+.file-demo {
+    display: none;
+}
+
+.file-demo.active {
+    display: block;
+}
+
+.file-operation {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.filename-input,
+.fd-select,
+.write-content {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.write-content {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.open-file-btn,
+.write-file-btn,
+.read-file-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.open-file-btn:hover,
+.write-file-btn:hover,
+.read-file-btn:hover {
+    background: #2563eb;
+}
+
+.read-output {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
+    margin-top: 1rem;
+}
+
+.open-files-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-entry {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.write-status {
+    color: #10b981;
+    text-align: center;
+}
