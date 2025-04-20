@@ -52,8 +52,8 @@ class PagingSimulation {
     console.log("hey");
     this.nextBtn.addEventListener('click', () =>{
         if(count == 7){
-            this.reset();
             count = 0;
+            this.reset();
         }else{
             this.nextStep();
         }
