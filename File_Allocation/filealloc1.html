@@ -392,8 +392,10 @@
     var blockSize = parseInt(document.getElementById('blockSize').value);
     var numBlocks = parseInt(document.getElementById('numBlocks').value);
     var occupiedBlocks = [];
+    var blockData = {}; // Object to store data size in each block
     var disk = document.getElementById('disk');
     var fat = document.getElementById('fat');
+    
     // Function to initialize disk blocks
     function initializeDisk() {
         disk.innerHTML = '';
@@ -404,6 +406,8 @@
         var remainingBlocks = numBlocks % blocksPerRow;
         var numRows = Math.ceil(numBlocks / blocksPerRow);
         occupiedBlocks = [];
+        blockData = {}; // Reset block data
+        
         for (var i = 0; i < numRows; i++) {
             var row = document.createElement('div');
             row.className = 'row';
@@ -422,117 +426,203 @@
             }
             disk.appendChild(row);
         }
-         // Initialize FAT
+        
+        // Initialize FAT
         var fatTable = document.createElement('table');
-        fatTable.innerHTML = '<tr><th>File Code</th><th>Start/Index</th><th>Length/End/Contents of Index Block</th></tr>';
+        fatTable.innerHTML = '<tr><th>File Code</th><th>Start/Index</th><th>Length/End/Contents of Index Block</th><th>Data Size Per Block</th><th>Total Size</th></tr>';
         fat.appendChild(fatTable);
     }
 
     // Function to allocate file using sequential strategy
-    function allocateSequential(numBlocksNeeded, fileCode) {
+    function allocateSequential(numBlocksNeeded, fileCode, fileSize) {
         var start = 0, found = 1;
-        for(var i = 0; i<numBlocks; i++)        {
-        if(!occupiedBlocks.includes(i)) {
-            start = i;
-            found = 1;
-            for(var j = i+1; j<i+numBlocksNeeded; j++) {
-                if(occupiedBlocks.includes(j)) {
+        for(var i = 0; i<numBlocks; i++) {
+            if(!occupiedBlocks.includes(i)) {
+                start = i;
+                found = 1;
+                for(var j = i+1; j<i+numBlocksNeeded; j++) {
+                    if(occupiedBlocks.includes(j)) {
+                        found = 0;
+                        break;
+                    }
+                }
+                if(start+numBlocksNeeded>numBlocks) {
                     found = 0;
                     break;
                 }
+                if(found==1) {
+                    break; 
+                }
             }
-            if(start+numBlocksNeeded>numBlocks) {
-             found = 0;
-            break;}
-            if(found==1) {
-                break; 
-            }
-         }
-         }
-            if(found==1) {
+        }
+        
+        if(found==1) {
+            // Calculate data per block
+            var dataSizePerBlock = Math.ceil(fileSize / numBlocksNeeded);
+            var remainingData = fileSize;
+            var blockDataSizes = [];
+            
             for (var i = start; i < start + numBlocksNeeded; i++) {
-        occupiedBlocks.push(i);
+                occupiedBlocks.push(i);
                 document.getElementsByClassName('block')[i].style.backgroundColor = 'white';
                 document.getElementsByClassName('block')[i].textContent = fileCode;
-                }
-        var fatTable = document.querySelector('.fat table');
-        var row = fatTable.insertRow(-1);
-        var cell1 = row.insertCell(0);
-        var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        cell1.textContent = fileCode;
-        cell2.textContent = start;
-        cell3.textContent = numBlocksNeeded;
-       }
-       else {
-        displayErrorMessage('SPACE EXCEEDED');
-       }
+                
+                // Calculate and store data size for this block
+                var dataInThisBlock = Math.min(blockSize, remainingData);
+                remainingData -= dataInThisBlock;
+                blockData[i] = dataInThisBlock;
+                blockDataSizes.push(dataInThisBlock);
+            }
+            
+            var fatTable = document.querySelector('.fat table');
+            var row = fatTable.insertRow(-1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+            
+            cell1.textContent = fileCode;
+            cell2.textContent = start;
+            cell3.textContent = numBlocksNeeded;
+            cell4.textContent = blockDataSizes.join(', ');
+            cell5.textContent = fileSize;
+        }
+        else {
+            displayErrorMessage('SPACE EXCEEDED');
+        }
     }
 
     // Function to allocate file using linked strategy
-    function allocateLinked(numBlocksNeeded, fileCode) {
+    function allocateLinked(numBlocksNeeded, fileCode, fileSize) {
         var first = -1, prev = 0, end = 0;
-            for (var i = 0; i < numBlocks; i++) {
-                if (!occupiedBlocks.includes(i)) {
-                    occupiedBlocks.push(i);
-                    document.getElementsByClassName('block')[i].style.backgroundColor = 'white';
-                    document.getElementsByClassName('block')[i].textContent = fileCode;
-            if(first==-1) {
-            first = i;
+        var remainingData = fileSize;
+        var freeBlocksCount = 0;
+        var blockDataSizes = [];
+        
+        // First check if we have enough free blocks
+        for (var i = 0; i < numBlocks; i++) {
+            if (!occupiedBlocks.includes(i)) {
+                freeBlocksCount++;
             }
-            else {
-            document.getElementsByClassName('block')[prev].textContent += ',' + i; }
-                    numBlocksNeeded--;
-                    if (numBlocksNeeded === 0) {
-                        end = i;
-                        break;
-                    }
-            prev = i;
+        }
+        
+        if (freeBlocksCount < numBlocksNeeded) {
+            displayErrorMessage('SPACE EXCEEDED');
+            return;
+        }
+        
+        for (var i = 0; i < numBlocks; i++) {
+            if (!occupiedBlocks.includes(i)) {
+                occupiedBlocks.push(i);
+                document.getElementsByClassName('block')[i].style.backgroundColor = 'white';
+                document.getElementsByClassName('block')[i].textContent = fileCode;
+                
+                // Calculate and store data size for this block
+                var dataInThisBlock = Math.min(blockSize, remainingData);
+                remainingData -= dataInThisBlock;
+                blockData[i] = dataInThisBlock;
+                blockDataSizes.push(dataInThisBlock);
+                
+                if(first==-1) {
+                    first = i;
                 }
+                else {
+                    document.getElementsByClassName('block')[prev].textContent += ',' + i;
+                }
+                
+                numBlocksNeeded--;
+                if (numBlocksNeeded === 0) {
+                    end = i;
+                    break;
+                }
+                prev = i;
             }
+        }
+        
         var fatTable = document.querySelector('.fat table');
         var row = fatTable.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        
         cell1.textContent = fileCode;
         cell2.textContent = first;
         cell3.textContent = end;
+        cell4.textContent = blockDataSizes.join(', ');
+        cell5.textContent = fileSize;
     }
 
     // Function to allocate file using indexed strategy
-    function allocateIndexed(numBlocksNeeded, fileCode) {
+    function allocateIndexed(numBlocksNeeded, fileCode, fileSize) {
         var index = 0;
         var blocks = '';
-        for(var i = 0; i<numBlocks; i++) {
-        if(!occupiedBlocks.includes(i)) {
-            occupiedBlocks.push(i);
-            index = i;
-            document.getElementsByClassName('block')[i].style.backgroundColor = 'pink';
-                    document.getElementsByClassName('block')[i].textContent = fileCode;
-            break;
+        var remainingData = fileSize;
+        var blockDataSizes = [];
+        var freeBlocksCount = 0;
+        
+        // First check if we have enough free blocks (including index block)
+        for (var i = 0; i < numBlocks; i++) {
+            if (!occupiedBlocks.includes(i)) {
+                freeBlocksCount++;
+            }
         }
+        
+        if (freeBlocksCount < numBlocksNeeded + 1) { // +1 for index block
+            displayErrorMessage('SPACE EXCEEDED');
+            return;
         }
-            for (var i = 0; i < numBlocks; i++) {
-                if (!occupiedBlocks.includes(i)) {
-                    occupiedBlocks.push(i);
-                    blocks += ' ' + i;
-                    document.getElementsByClassName('block')[i].style.backgroundColor = 'white';
-                    document.getElementsByClassName('block')[i].textContent = fileCode;
-            numBlocksNeeded--;
-                    if (numBlocksNeeded === 0) {
-                        break;
-                    }
+        
+        // Find an index block
+        for(var i = 0; i < numBlocks; i++) {
+            if(!occupiedBlocks.includes(i)) {
+                occupiedBlocks.push(i);
+                index = i;
+                document.getElementsByClassName('block')[i].style.backgroundColor = 'pink';
+                document.getElementsByClassName('block')[i].textContent = fileCode;
+                blockData[i] = 0; // Index block has metadata, not actual file data
+                blockDataSizes.push(0);
+                break;
+            }
+        }
+        
+        // Find blocks for actual data
+        var dataBlockCount = 0;
+        for (var i = 0; i < numBlocks; i++) {
+            if (!occupiedBlocks.includes(i)) {
+                occupiedBlocks.push(i);
+                blocks += ' ' + i;
+                document.getElementsByClassName('block')[i].style.backgroundColor = 'white';
+                document.getElementsByClassName('block')[i].textContent = fileCode;
+                
+                // Calculate and store data size for this block
+                var dataInThisBlock = Math.min(blockSize, remainingData);
+                remainingData -= dataInThisBlock;
+                blockData[i] = dataInThisBlock;
+                blockDataSizes.push(dataInThisBlock);
+                
+                dataBlockCount++;
+                if (dataBlockCount === numBlocksNeeded) {
+                    break;
                 }
             }
+        }
+        
         var fatTable = document.querySelector('.fat table');
         var row = fatTable.insertRow(-1);
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
         var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        var cell5 = row.insertCell(4);
+        
         cell1.textContent = fileCode;
         cell2.textContent = index;
         cell3.textContent = blocks;
+        cell4.textContent = blockDataSizes.join(', ');
+        cell5.textContent = fileSize;
     }
 
     // Function to allocate file based on selected strategy
@@ -540,57 +630,82 @@
         var fileSize = parseInt(document.getElementById('fileSize').value);
         var fileCode = parseInt(document.getElementById('fileCode').value);
         var strategy = document.getElementById('strategy').value;
-    var numBlocksNeeded = Math.ceil(fileSize / blockSize);
-        if (numBlocksNeeded > numBlocks - occupiedBlocks.length) {
-        displayErrorMessage('SPACE EXCEEDED');
-    }
-    else {
-        switch (strategy) {
-            case 'sequential':
-                allocateSequential(numBlocksNeeded, fileCode);
-                break;
-            case 'linked':
-                allocateLinked(numBlocksNeeded, fileCode);
-                break;
-            case 'indexed':
-                allocateIndexed(numBlocksNeeded, fileCode);
-                break;
-            default:
-                break;
+        var numBlocksNeeded = Math.ceil(fileSize / blockSize);
+        
+        // Check if file code is provided
+        if (isNaN(fileCode)) {
+            displayErrorMessage('PLEASE ENTER A FILE CODE');
+            return;
+        }
+        
+        // Check if the FAT already has this file code
+        var fatTable = document.querySelector('.fat table');
+        for (var i = 1; i < fatTable.rows.length; i++) {
+            if (parseInt(fatTable.rows[i].cells[0].textContent) === fileCode) {
+                displayErrorMessage('FILE CODE ALREADY EXISTS');
+                return;
+            }
+        }
+        
+        if (strategy === 'indexed' && numBlocksNeeded > numBlocks - occupiedBlocks.length - 1) {
+            // Indexed needs an extra block for the index
+            displayErrorMessage('SPACE EXCEEDED');
+        }
+        else if (numBlocksNeeded > numBlocks - occupiedBlocks.length) {
+            displayErrorMessage('SPACE EXCEEDED');
+        }
+        else {
+            switch (strategy) {
+                case 'sequential':
+                    allocateSequential(numBlocksNeeded, fileCode, fileSize);
+                    break;
+                case 'linked':
+                    allocateLinked(numBlocksNeeded, fileCode, fileSize);
+                    break;
+                case 'indexed':
+                    allocateIndexed(numBlocksNeeded, fileCode, fileSize);
+                    break;
+                default:
+                    break;
+            }
         }
     }
-    }
 
-
-       // Function to deallocate file
+    // Function to deallocate file
     function deallocateFile() {
         var fileCode = parseInt(document.getElementById('deallocateFileCode').value);
-    var deallocatedBlocks = 0;
+        var deallocatedBlocks = 0;
 
-    for (var i = 0; i < occupiedBlocks.length; i++) {
+        for (var i = 0; i < occupiedBlocks.length; i++) {
             var block = document.getElementsByClassName('block')[occupiedBlocks[i]];
 
             if (block.textContent == fileCode || block.textContent.split(',')[0] == fileCode) {
                 block.textContent = occupiedBlocks[i];
                 block.style.backgroundColor = '#0d1117';
+                
+                // Remove data size for this block
+                delete blockData[occupiedBlocks[i]];
+                
                 occupiedBlocks.splice(i, 1);
                 i--; // Adjust index due to removed element
                 deallocatedBlocks++;
             }
-    }
-    // Remove entry from FAT
-    var fatTable = document.querySelector('.fat table');
-    for (var i = 0; i < fatTable.rows.length; i++) {
-        var row = fatTable.rows[i];
-        if (parseInt(row.cells[0].textContent) === fileCode) {
-            fatTable.deleteRow(i);
+        }
+        
+        // Remove entry from FAT
+        var fatTable = document.querySelector('.fat table');
+        for (var i = 1; i < fatTable.rows.length; i++) {
+            var row = fatTable.rows[i];
+            if (parseInt(row.cells[0].textContent) === fileCode) {
+                fatTable.deleteRow(i);
+                break;
+            }
+        }
+        
+        if (deallocatedBlocks === 0) {
+            displayErrorMessage('FILE NOT FOUND');
         }
     }
-    if (deallocatedBlocks === 0) {
-        displayErrorMessage('FILE NOT FOUND');
-    }
-}
-
 
     // Function to display error message
     function displayErrorMessage(message) {
