@@ -115,3 +115,10 @@ open index.html   # or use Live Server extension in VS Code
 - EDF (Earliest Deadline First Scheduling)
 - RMS (Rate Monotonic Scheduling)
 
+
+## 🧑‍💻 Tech Stack Used
+
+- HTML
+- CSS
+- JavaScript
+
