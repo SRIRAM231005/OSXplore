@@ -29,7 +29,7 @@ We cover a wide variety of OS concepts, including:
 - **Process Synchronization** – Semaphores, Mutex, Peterson's Algorithm
 - **Inter-Process Communication (IPC)** – Shared Memory, Message Passing
 - **Frame Allocation** – Equal, Proportional, Global, Local
-- ⚙**System Calls** – Types, Examples, Visual Flow
+- **System Calls** – Types, Examples, Visual Flow
 - **RTOS Concepts** – Task Scheduling, Real-Time Constraints
 - **Page Simulation** – Real-time page hit/miss tracking
 
