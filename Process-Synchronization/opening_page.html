@@ -190,6 +190,7 @@
       <li>Represent forks as binary semaphores.</li>
       <li>Use a semaphore "room" to limit entry to N-1 philosophers.</li>
       <li>Alternate fork-picking order to avoid circular wait.</li>
+      <li>Even-ordered forks are held by the philosophers first, then followed by the odd-ordered forks.</li>
     </ul>
     <p><code>
       wait(room);<br>
@@ -216,7 +217,7 @@
     </code></p>
 
     <h3 id="reader">📖 Reader Writer Problem</h3>
-    <p>Readers can access shared data simultaneously; writers need exclusive access. Goal is to avoid starvation and ensure mutual exclusion.</p>
+    <p>Readers can access shared data simultaneously; writers need exclusive access. Goal is to avoid starvation and ensure mutual exclusion. No two writers or a writer and readers must access the resource at the same time. However, multiple readers can access the resource at the same time.</p>
     <p><strong>Solution:</strong></p>
     <ul>
       <li>Use <code>mutex</code> for reader count, <code>rw_mutex</code> for DB access.</li>
