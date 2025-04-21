@@ -20,12 +20,18 @@ This project is designed to **teach and demonstrate key OS algorithms** through 
 
 We cover a wide variety of OS concepts, including:
 
-- **Process Scheduling** (FCFS, SJF, Round Robin, Priority Scheduling)
-- **Page Replacement Algorithms** (FIFO, LRU, Optimal)
-- **Disk Scheduling** (SCAN, C-SCAN, LOOK, C-LOOK)
-- **Memory Management**
-- **Deadlock Handling**
-- And more...
+- 🔄 **CPU Scheduling Algorithms** – FCFS, SJF, Round Robin, Priority
+- 💾 **Disk Scheduling** – SCAN, C-SCAN, LOOK, C-LOOK, SSTF
+- 🧩 **Page Replacement Algorithms** – FIFO, LRU, Optimal
+- 🧠 **Memory Management** – MFT, MVT, Paging, Segmentation
+- 📂 **File Organization & Allocation** – Contiguous, Linked, Indexed
+- 🔐 **Deadlock Avoidance & Prevention** – Banker's Algorithm, Safe/Unsafe States
+- 🤝 **Process Synchronization** – Semaphores, Mutex, Peterson's Algorithm
+- 📤 **Inter-Process Communication (IPC)** – Shared Memory, Message Passing
+- 🧱 **Frame Allocation** – Equal, Proportional, Global, Local
+- ⚙️ **System Calls** – Types, Examples, Visual Flow
+- 🚀 **RTOS Concepts** – Task Scheduling, Real-Time Constraints
+- 📊 **Page Simulation** – Real-time page hit/miss tracking
 
 ---
 
