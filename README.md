@@ -51,23 +51,23 @@ open index.html   # or use Live Server extension in VS Code
 ```
 ## 📚 OS Concepts Covered
 
-### 🔄 CPU Scheduling
+### CPU Scheduling
 - FCFS
 - SJF (Preemptive & Non-preemptive)
 - Round Robin
 - Priority Scheduling
 
-### 💾 Disk Scheduling
+### Disk Scheduling
 - FCFS
 - SCAN, C-SCAN
 - LOOK, C-LOOK
 - SSTF
 
-### 🧠 Memory Management
+### Memory Management
 - MFT (Fixed Partitioning)
 - MVT (Variable Partitioning)
 
-### 📦 Page Replacement Algorithms
+### Page Replacement Algorithms
 - FIFO
 - LRU (Least Recently Used)
 - LFU (Least Frequently Used)
@@ -77,43 +77,45 @@ open index.html   # or use Live Server extension in VS Code
 - Enhanced Second Chance
 - Additional Bit Algorithm
 
-### 🧱 Frame Allocation
+### Frame Allocation
 - Equal Allocation
 - Proportional Allocation
 - Global vs Local Allocation
 
-### 📁 File Allocation
+### File Allocation
 - Contiguous Allocation
 - Linked Allocation
 - Indexed Allocation
 
 
 
-### 🔐 Deadlock Handling
+### Deadlock Handling
 - Deadlock Prevention
 - Deadlock Avoidance (Banker’s Algorithm)
 - Deadlock Detection
 
 
-### 🤝 Process Synchronization
+### Process Synchronization
 - Producer-Consumer Problem
 - Reader-Writer Problem
 - Dining Philosophers Problem
 - Sleeping Barber Problem
 
-### 📤 Inter-Process Communication (IPC)
+### Inter-Process Communication (IPC)
 - Inter-process vs Intra-process Communication
 
-### ⚙️ System Calls
+### System Calls
 - `fork()`
 - `exec()`
 - `wait()`
 - `exit()`
 - Overview of system call mechanism
 
-### ⏱️ Real-Time Operating Systems (RTOS)
+### Real-Time Operating Systems (RTOS)
 - EDF (Earliest Deadline First Scheduling)
 - RMS (Rate Monotonic Scheduling)
+
+---
 
 
 ## 🧑‍💻 Tech Stack Used
