@@ -206,7 +206,7 @@
     <p>Shared buffer used by producer (inserts items) and consumer (removes items). Must avoid overfilling or empty reads.</p>
     <p><strong>Solution:</strong></p>
     <ul>
-      <li>Semaphores: <code>mutex, full, empty</code></li>
+      <li>Semaphores: <code>mutex = 1, full, empty</code></li>
       <li><code>empty</code> initialized to buffer size, <code>full</code> to 0.</li>
     </ul>
     <p><code>
@@ -220,7 +220,7 @@
     <p>Readers can access shared data simultaneously; writers need exclusive access. Goal is to avoid starvation and ensure mutual exclusion. No two writers or a writer and readers must access the resource at the same time. However, multiple readers can access the resource at the same time.</p>
     <p><strong>Solution:</strong></p>
     <ul>
-      <li>Use <code>mutex</code> for reader count, <code>rw_mutex</code> for DB access.</li>
+      <li>Use <code>mutex = 1</code> for reader count (initially 0), <code>rw_mutex = 1</code> for DB access.</li>
     </ul>
     <p><code>
       // Reader<br>
@@ -235,11 +235,11 @@
     <p>Barber sleeps if no customers. Customers wait if chairs are full or wake barber if he's sleeping.</p>
     <p><strong>Solution:</strong></p>
     <ul>
-      <li>Semaphores: <code>customers, barbers, mutex</code></li>
+      <li>Semaphores: initialize <code>customers = 0, barbers = 0, mutex = 1 with waiting (initially 0)</code></li>
     </ul>
     <p><code>
       // Customer<br>
-      wait(mutex); if (waiting < N) waiting++; signal(customers); signal(mutex); wait(barbers);<br>
+      wait(mutex); if (waiting < N) waiting++; signal(customers); signal(mutex); wait(barbers); <br>
       // Barber<br>
       wait(customers); wait(mutex); waiting--; signal(barbers); signal(mutex); cutHair();
     </code></p>
