@@ -31,6 +31,8 @@ git clone https://github.com/SRIRAM231005/OSXplore.git
 
 open index.html   # or use Live Server extension in VS Code
 ```
+---
+
 ## 📚 OS Concepts Covered
 
 ### CPU Scheduling
