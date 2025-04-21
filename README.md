@@ -51,6 +51,15 @@ open index.html   # or use Live Server extension in VS Code
 - MFT (Fixed Partitioning)
 - MVT (Variable Partitioning)
 
+### Memory Allocation Techniques
+- First Fit
+- Next Fit
+- Worst Fit
+- Best Fit
+
+### Paging Simulation
+- Simulation of Paging (Virtual Memory)
+
 ### Page Replacement Algorithms
 - FIFO
 - LRU (Least Recently Used)
