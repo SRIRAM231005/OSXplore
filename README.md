@@ -32,7 +32,7 @@ We cover a wide variety of OS concepts, including:
 ## 🌐 Live Demo
 
 Check out the project live here:  
-🔗 [Live Demo]((https://sriram231005.github.io/OSXplore/)) 
+🔗 [Live Demo](https://sriram231005.github.io/OSXplore/) 
 
 ---
 
