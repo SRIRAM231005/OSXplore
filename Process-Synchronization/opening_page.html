@@ -1,144 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Process Synchronization</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #1a202c;
-            color: white;
-            text-align: center;
-            padding: 0;
-            margin: 0;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        .navbar {
-            width: 100%;
-            background: rgba(30, 39, 50, 0.9);
-            padding: 20px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10;
-            font-size: 28px;
-            font-weight: 600;
-        }
-        
-        .blob {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(74, 144, 226, 0.6), rgba(74, 144, 226, 0.2));
-            filter: blur(100px);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: moveBlob 10s infinite alternate ease-in-out;
-            z-index: -1;
-        }
-        
-        @keyframes moveBlob {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            100% { transform: translate(-40%, -45%) scale(1.2); }
-        }
-        
-        .container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            max-width: 900px;
-            margin: auto;
-            position: relative;
-            z-index: 2;
-            padding-top: 100px;
-            padding-bottom: 50px;
-        }
-        
-        .card {
-            width: 260px;
-            background: rgba(45, 55, 72, 0.85);
-            padding: 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            text-align: left;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0;
-            overflow: hidden;
-        }
-        
-        .card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-        
-        .card:hover {
-            transform: scale(1.05) rotate(1deg);
-            box-shadow: 0px 8px 16px rgba(74, 144, 226, 0.4);
-        }
-        
-        .card:active {
-            transform: scale(0.98);
-        }
-        
-        h2 {
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        
-        .card h3 {
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Process Synchronization</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #1a202c;
+      color: white;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    .navbar {
+      width: 100%;
+      background: rgba(30, 39, 50, 0.9);
+      padding: 20px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .blob {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(74, 144, 226, 0.6), rgba(74, 144, 226, 0.2));
+      filter: blur(100px);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: moveBlob 10s infinite alternate ease-in-out;
+      z-index: -1;
+    }
+
+    @keyframes moveBlob {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      100% { transform: translate(-40%, -45%) scale(1.2); }
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      max-width: 900px;
+      margin: auto;
+      position: relative;
+      z-index: 2;
+      padding-top: 120px;
+      padding-bottom: 50px;
+    }
+
+    .card {
+      width: 260px;
+      background: rgba(45, 55, 72, 0.85);
+      padding: 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: left;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .card:hover {
+      transform: scale(1.05) rotate(1deg);
+      box-shadow: 0px 8px 16px rgba(74, 144, 226, 0.4);
+    }
+
+    .card:active {
+      transform: scale(0.98);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .content-section {
+      max-width: 1000px;
+      margin: auto;
+      padding: 30px 20px 80px;
+      position: relative;
+      z-index: 2;
+    }
+
+    h2 {
+      margin-top: 40px;
+      font-size: 32px;
+      font-weight: 600;
+      text-align: center;
+      color: #74b3f0;
+    }
+
+    h3 {
+      margin-top: 25px;
+      font-size: 24px;
+      color: #fcd34d;
+    }
+
+    p, ul {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    code {
+      background: #2d3748;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="navbar">Process Synchronization</div>
-    <div class="blob"></div>
-    <div class="container">
-        <div class="card" onclick="location.href='dining_philosophers.html'">
-            <img src="dining_philosophers.png" alt="Dining Philosopher">
-            <h3>Dining Philosopher Problem</h3>
-            <p>This problem models resource sharing among multiple processes where philosophers must alternate between thinking and eating, requiring two forks each, which can lead to deadlocks.</p>
-        </div>
-        <div class="card" onclick="location.href='producer_consumer.html'">
-            <img src="producer_consumer.png" alt="Producer Consumer">
-            <h3>Producer Consumer Problem</h3>
-            <p>This synchronization problem involves a shared buffer where producers generate data and consumers retrieve it.</p>
-        </div>
-        <div class="card" onclick="location.href='reader_writer.html'">
-            <img src="reader_writer.png" alt="Reader Writer">
-            <h3>Reader Writer Problem</h3>
-            <p>In this problem, multiple readers can access shared data simultaneously, but writers require exclusive access.</p>
-        </div>
-        <div class="card" onclick="location.href='sleeping_barber.html'">
-            <img src="sleeping_barber.png" alt="Sleeping Barber">
-            <h3>Sleeping Barber Problem</h3>
-            <p>This problem models customer service synchronization where a barber sleeps if no customers are present.</p>
-        </div>
+  <div class="navbar">Process Synchronization</div>
+  <div class="blob"></div>
+
+  <div class="container">
+    <div class="card" onclick="location.href='dining_philosophers.html'">
+      <img src="dining_philosophers.png" alt="Dining Philosopher" />
+      <h3>Dining Philosopher Problem</h3>
+      <p>Philosophers alternate between thinking and eating. They need two forks each, which can lead to deadlocks.</p>
     </div>
+    <div class="card" onclick="location.href='producer_consumer.html'">
+      <img src="producer_consumer.png" alt="Producer Consumer" />
+      <h3>Producer Consumer Problem</h3>
+      <p>Producers generate data into a buffer; consumers retrieve it. Needs buffer synchronization.</p>
+    </div>
+    <div class="card" onclick="location.href='reader_writer.html'">
+      <img src="reader_writer.png" alt="Reader Writer" />
+      <h3>Reader Writer Problem</h3>
+      <p>Readers can access simultaneously, writers need exclusive access. Balancing access is key.</p>
+    </div>
+    <div class="card" onclick="location.href='sleeping_barber.html'">
+      <img src="sleeping_barber.png" alt="Sleeping Barber" />
+      <h3>Sleeping Barber Problem</h3>
+      <p>A barber sleeps if no customers. Requires managing queue and wake-up logic.</p>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2>📚 What is Process Synchronization?</h2>
+    <p>Process Synchronization is a mechanism to coordinate concurrent processes so that they execute without interfering with each other when accessing shared resources. It ensures consistency, prevents race conditions, deadlocks, and maintains process integrity.</p>
+
+    <h3>🔐 Synchronization Tools</h3>
+    <ul>
+      <li><strong>Mutex (Mutual Exclusion):</strong> Allows one thread/process at a time in a critical section.</li>
+      <li><strong>Semaphore:</strong> A signaling mechanism with two types: binary (mutex-like) and counting (resource counters).</li>
+      <li><strong>Critical Section:</strong> Code segment where shared resources are accessed. Needs protection.</li>
+    </ul>
+
+    <h2>🧩 Classical Problems</h2>
+
+    <h3 id="dining">🍽 Dining Philosopher Problem</h3>
+    <p>Five philosophers sit around a table, needing two forks to eat. This leads to possible deadlock if all pick one fork and wait.</p>
+    <p><strong>Solution:</strong></p>
+    <ul>
+      <li>Represent forks as binary semaphores.</li>
+      <li>Use a semaphore "room" to limit entry to N-1 philosophers.</li>
+      <li>Alternate fork-picking order to avoid circular wait.</li>
+    </ul>
+    <p><code>
+      wait(room);<br>
+      wait(left_fork);<br>
+      wait(right_fork);<br>
+      eat();<br>
+      signal(left_fork);<br>
+      signal(right_fork);<br>
+      signal(room);
+    </code></p>
+
+    <h3 id="producer">⚙️ Producer Consumer Problem</h3>
+    <p>Shared buffer used by producer (inserts items) and consumer (removes items). Must avoid overfilling or empty reads.</p>
+    <p><strong>Solution:</strong></p>
+    <ul>
+      <li>Semaphores: <code>mutex, full, empty</code></li>
+      <li><code>empty</code> initialized to buffer size, <code>full</code> to 0.</li>
+    </ul>
+    <p><code>
+      // Producer<br>
+      wait(empty); wait(mutex); produce(); signal(mutex); signal(full);<br>
+      // Consumer<br>
+      wait(full); wait(mutex); consume(); signal(mutex); signal(empty);
+    </code></p>
+
+    <h3 id="reader">📖 Reader Writer Problem</h3>
+    <p>Readers can access shared data simultaneously; writers need exclusive access. Goal is to avoid starvation and ensure mutual exclusion.</p>
+    <p><strong>Solution:</strong></p>
+    <ul>
+      <li>Use <code>mutex</code> for reader count, <code>rw_mutex</code> for DB access.</li>
+    </ul>
+    <p><code>
+      // Reader<br>
+      wait(mutex); readCount++; if (readCount == 1) wait(rw_mutex); signal(mutex);<br>
+      read();<br>
+      wait(mutex); readCount--; if (readCount == 0) signal(rw_mutex); signal(mutex);<br><br>
+      // Writer<br>
+      wait(rw_mutex); write(); signal(rw_mutex);
+    </code></p>
+
+    <h3 id="barber">💈 Sleeping Barber Problem</h3>
+    <p>Barber sleeps if no customers. Customers wait if chairs are full or wake barber if he's sleeping.</p>
+    <p><strong>Solution:</strong></p>
+    <ul>
+      <li>Semaphores: <code>customers, barbers, mutex</code></li>
+    </ul>
+    <p><code>
+      // Customer<br>
+      wait(mutex); if (waiting < N) waiting++; signal(customers); signal(mutex); wait(barbers);<br>
+      // Barber<br>
+      wait(customers); wait(mutex); waiting--; signal(barbers); signal(mutex); cutHair();
+    </code></p>
+  </div>
 </body>
 </html>
