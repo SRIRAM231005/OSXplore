@@ -73,7 +73,7 @@ open index.html   # or use Live Server extension in VS Code
 ### Frame Allocation
 - Equal Allocation
 - Proportional Allocation
-- Global vs Local Allocation
+- Priority Allocation
 
 ### File Allocation
 - Contiguous Allocation
