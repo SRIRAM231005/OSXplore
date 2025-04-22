@@ -156,11 +156,10 @@ function getProcessData() {
 // Algorithms
 function equalAllocation(processes, totalFrames) {
     const framesPerProcess = Math.floor(totalFrames / processes.length);
-    const remainder = totalFrames % processes.length;
-
-    return processes.map((p, i) => ({
+    // Don't distribute the remainder
+    return processes.map(p => ({
         process: p,
-        frames: framesPerProcess + (i < remainder ? 1 : 0)
+        frames: framesPerProcess
     }));
 }
 
@@ -205,6 +204,9 @@ function visualizeAllocation(allocations, totalFrames) {
     let frameIndex = 0;
     const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2'];
 
+    // Calculate total allocated frames
+    const totalAllocated = allocations.reduce((sum, a) => sum + a.frames, 0);
+
     allocations.forEach((a, idx) => {
         for (let i = 0; i < a.frames; i++) {
             const f = document.createElement('div');
@@ -218,7 +220,9 @@ function visualizeAllocation(allocations, totalFrames) {
         }
     });
 
-    for (let i = frameIndex; i < totalFrames; i++) {
+    // Add remaining free frames
+    const freeFrames = totalFrames - totalAllocated;
+    for (let i = 0; i < freeFrames; i++) {
         const f = document.createElement('div');
         f.className = 'frame';
         f.style.backgroundColor = '#E9ECEF';
